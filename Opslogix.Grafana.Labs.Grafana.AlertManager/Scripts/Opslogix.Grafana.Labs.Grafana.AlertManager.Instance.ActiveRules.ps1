@@ -1,10 +1,10 @@
 ﻿#Insert parameters if necessary, otherwise remove this
 param(
-$QueryUser,
-$QueryPwd,
-[string]$Uid,
-[string]$URL,
-[string]$rule
+    $QueryUser,
+    $QueryPwd,
+    [string]$Uid,
+    [string]$URL,
+    [string]$rule
 )
 
 ### Define Operations Manager objects ###
@@ -36,24 +36,33 @@ function Exit-Script() {
 }
 
 $OrgId = 1
-$ServiceAccountToken=$QueryPwd
+#$ServiceAccountToken = $QueryPwd
+$ServiceAccountToken = "glsa_9c12tirBqO8fFOjZYvX5lN21wepnqfpm_94adf701"
 
 
 # Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
-    "Accept" = "application/json"
-    "Content-Type" = "application/json"
+    "Accept"           = "application/json"
+    "Content-Type"     = "application/json"
     "X-Grafana-Org-Id" = "$OrgId"
-    "Authorization" = "Bearer $ServiceAccountToken"
+    "Authorization"    = "Bearer $ServiceAccountToken"
 }
 
-$response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+$baseurl = $URL
+$resourceurl = "/api/alertmanager/grafana/api/v2/alerts"
+$ChecksURI = $baseurl+ $resourceurl
 
+$response = Invoke-RestMethod -Uri $ChecksURI -Method Get -headers $WebRequestHeaders
 
 # Filter the response to match the specific rule (alertname)
 $filteredAlerts = $response | Where-Object { $_.labels.__alert_rule_uid__ -eq $Uid }
 
+$Temp = ($filteredAlerts | Measure-Object).Count
+Write-WarningEvent -EventID 5470 -Message "Filtered alerts: $Temp"
 # Check if the output is empty (no active rules)
+
+<# Looks like the issue is here. There is an active firing Alert but it returns ok. They all return 0 in the count#>
+
 if ($null -eq $filteredAlerts -or ($filteredAlerts | Measure-Object).Count -eq 0) {
     # No active rules = rules is in healthy conditions
     Write-InfoEvent -EventID 5470 -Message "No active events found, Return ok"
@@ -62,7 +71,8 @@ if ($null -eq $filteredAlerts -or ($filteredAlerts | Measure-Object).Count -eq 0
     $propertyBag.AddValue('Result', "OK")
     $propertyBag.AddValue('AlertSummary', $alertSummary)
     $propertyBag
-} else {
+}
+else {
     # Build a summary of all active rules
     Write-InfoEvent -EventID 5470 -Message  "Alert Rule '$rule' is under state Firing:`n`n"
     $alertSummary = "Alert Rule '$rule' is under state Firing:`n`n"

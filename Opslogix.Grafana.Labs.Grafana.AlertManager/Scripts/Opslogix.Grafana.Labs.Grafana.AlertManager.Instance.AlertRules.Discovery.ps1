@@ -14,11 +14,12 @@ $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityI
 
 #Define variables
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
-$version = "1.0.3"
+$version = "1.0.4"
 $scriptOutput = ""
 
 $OrgId = 1
-$ServiceAccountToken=$QueryPwd
+# ServiceAccountToken="$QueryPwd"
+$ServiceAccountToken="glsa_9c12tirBqO8fFOjZYvX5lN21wepnqfpm_94adf701"
 
 # Gather the start time of the script
 $StartTime = Get-Date
