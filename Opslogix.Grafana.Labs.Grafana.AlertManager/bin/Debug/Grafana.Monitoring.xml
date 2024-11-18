@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Manifest>
+    <Identity>
+      <ID>Grafana.Monitoring</ID>
+      <Version>1.0.0.58</Version>
+    </Identity>
+    <Name>Opslogix.Grafana.Labs.Grafana.AlertManager</Name>
+    <References>
+      <Reference Alias="System">
+        <ID>System.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+</ManagementPack>

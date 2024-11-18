@@ -1,0 +1,92 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Monitoring>
+    <Monitors>
+      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor" Enabled="false" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT"
+                  Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
+        <Category>Operations</Category>
+        <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
+          <AlertOnState>Error</AlertOnState>
+          <AutoResolve>true</AutoResolve>
+          <AlertPriority>Normal</AlertPriority>
+          <AlertSeverity>Error</AlertSeverity>
+          <AlertParameters>
+            <!--  <AlertParameter1>$Data/Context/Property[@Name='ErrorMessage']$</AlertParameter1>-->
+          </AlertParameters>
+        </AlertSettings>
+        <OperationalStates>
+          <OperationalState ID="Unhealthy" MonitorTypeStateID="Error" HealthState="Error"/>
+          <OperationalState ID="Healthy" MonitorTypeStateID="Success" HealthState="Success"/>
+        </OperationalStates>
+        <Configuration>
+          <URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
+          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <IntervalSeconds>300</IntervalSeconds>
+        </Configuration>
+      </UnitMonitor>
+    </Monitors>
+  </Monitoring>
+  <Presentation>
+    <StringResources>
+      <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage"></StringResource>
+    </StringResources>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.PA" >
+          <Name>Endpoint API Availability Probe Action</Name>
+          <Description>This is a probe action that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS">
+          <Name>Endpoint API Availability Data Source</Name>
+          <Description>This is the data source that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS" SubElementID="IntervalSeconds">
+          <Name>IntervalSeconds</Name>
+          <Description>IntervalSeconds</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT">
+          <Name>Endpoint API Availability Monitor Type</Name>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor">
+          <Name>Endpoint API Availability Monitor</Name>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
+          <Name>Endpoint API Availability Monitor is in an error state.</Name>
+          <Description>The monitor which runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script is in an error state.</Description>
+          <!--
+              To insert parameters from the property bag, use {x} for each parameter specified under <AlertParameters> (see further up).
+              AlertParameter1 = {0}
+              AlertParameter2 = {1}
+              ...
+            -->
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor" Visible="true">
+          <MamlContent xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+            <maml:section>
+              <maml:title>Summary</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Causes</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Configuration</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Resolution</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

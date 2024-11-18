@@ -1,0 +1,25 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <EntityTypes>
+      <ClassTypes>
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Public" Abstract="false" Base="System!System.ApplicationComponent" Hosted="false" Singleton="false" Extension="false">
+          <Property ID="URL" Key="true" Type="string" />
+        </ClassType>
+      </ClassTypes>
+    </EntityTypes>
+  </TypeDefinitions>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class">
+          <Name>Grafana Instance Endpoint</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" SubElementID="URL">
+          <Name>URL</Name>
+          <Description>URL</Description>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

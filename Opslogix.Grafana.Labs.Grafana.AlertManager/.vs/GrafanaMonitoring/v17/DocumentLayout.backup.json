@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}|GrafanaMonitoring.mpproj|C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Scripts\\Grafana.Instance.ActiveRules.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}|GrafanaMonitoring.mpproj|solutionrelative:Scripts\\Grafana.Instance.ActiveRules.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}|GrafanaMonitoring.mpproj|C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Scripts\\Grafana.Instance.ActiveRules_BACK.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}|GrafanaMonitoring.mpproj|solutionrelative:Scripts\\Grafana.Instance.ActiveRules_BACK.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}|GrafanaMonitoring.mpproj|C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Monitoring\\Monitoring\\Monitors\\Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}|GrafanaMonitoring.mpproj|solutionrelative:Monitoring\\Monitoring\\Monitors\\Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx",
+              "DocumentMoniker": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Monitoring\\Monitoring\\Monitors\\Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx",
+              "RelativeDocumentMoniker": "Monitoring\\Monitoring\\Monitors\\Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx",
+              "ToolTip": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Monitoring\\Monitoring\\Monitors\\Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx",
+              "RelativeToolTip": "Monitoring\\Monitoring\\Monitors\\Grafana.Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-08T12:38:08.559Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Grafana.Instance.ActiveRules.ps1",
+              "DocumentMoniker": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Scripts\\Grafana.Instance.ActiveRules.ps1",
+              "RelativeDocumentMoniker": "Scripts\\Grafana.Instance.ActiveRules.ps1",
+              "ToolTip": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Scripts\\Grafana.Instance.ActiveRules.ps1*",
+              "RelativeToolTip": "Scripts\\Grafana.Instance.ActiveRules.ps1*",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAAEYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-08T11:59:36.168Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Grafana.Instance.ActiveRules_BACK.ps1",
+              "DocumentMoniker": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Scripts\\Grafana.Instance.ActiveRules_BACK.ps1",
+              "RelativeDocumentMoniker": "Scripts\\Grafana.Instance.ActiveRules_BACK.ps1",
+              "ToolTip": "C:\\falk\\lokalt\\Grafana Monitoring\\GrafanaMonitoring\\Scripts\\Grafana.Instance.ActiveRules_BACK.ps1",
+              "RelativeToolTip": "Scripts\\Grafana.Instance.ActiveRules_BACK.ps1",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAADAAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-08T12:11:54.406Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

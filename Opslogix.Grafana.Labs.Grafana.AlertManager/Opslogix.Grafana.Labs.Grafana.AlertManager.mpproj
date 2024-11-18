@@ -1,0 +1,177 @@
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{860ef8d6-92dc-4ffb-ad29-cfcafc05d1ad}</ProjectGuid>
+    <RootNamespace>Opslogix.Grafana.Labs.Grafana.Alertmanager</RootNamespace>
+    <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
+    <ManagementPackName>Opslogix.Grafana.Labs.Grafana.Alertmanager</ManagementPackName>
+    <Version>1.0.0.0</Version>
+    <MpFrameworkVersion>v7.0.5</MpFrameworkVersion>
+    <MpFrameworkProfile>OM</MpFrameworkProfile>
+    <ProductVersion>1.1.0.0</ProductVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <GenerateSealed>False</GenerateSealed>
+    <Company>Opslogix B.V</Company>
+    <Copyright>Copyright (c) Opslogix B.V. All rights reserved.</Copyright>
+    <DelaySigning>False</DelaySigning>
+    <AssemblyOriginatorKeyFile>C:\Git\Opslogix.Grafana.Labs.Grafana.AlertManager\Resources\ChangeMe.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+    <DelaySigning>false</DelaySigning>
+    <Company>MyCompany</Company>
+    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <ManagementPackReference Include="Microsoft.SystemCenter.InstanceGroup.Library">
+      <HintPath>C:\Program Files (x86)\System Center Visual Studio 2022 Authoring Extensions\References\OM2022\Microsoft.SystemCenter.InstanceGroup.Library.mp</HintPath>
+      <Alias>MSIL</Alias>
+      <MinVersion>7.5.8501.1</MinVersion>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.SystemCenter.Library">
+      <Alias>SC</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.Windows.Library">
+      <Alias>Windows</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="System.Health.Library">
+      <Alias>Health</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="System.Library">
+      <Alias>System</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.SystemCenter.Visualization.Library">
+      <Alias>Visualization</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Monitoring\Discoverys\Instance.AlertRules.Discovery.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Discoverys\Instance.InstanceGroup.Discovery.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Discoverys\Instance.ManagedByPool.Discovery.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Discoverys\Instance.ResourcePool.Discovery.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.Availability.Script.UnitMonitor.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Folders\RootFolder.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Views\ActiveAlert.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Views\ClosedAlert.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Views\Instance.AlertRules.State.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Views\Instance.Endpoint.State.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Views\ResourcePool.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SecureReferences\Grafana.RunAsProfile.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ClassTypes\Instance.AlertRules.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ClassTypes\Instance.Endpoint.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ClassTypes\Instance.InstanceGroup.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ClassTypes\Instance.ResourcePool.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.ActiveRules.Script.PA.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.Availability.Script.PA.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\DataSource.ResourcePool.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.ActiveRules.Script.DS.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.Availability.Script.DS.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.PropertyBagProvider.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\MonitorTypes\Instance.ActiveRules.Script.MT.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\MonitorTypes\Instance.Availability.Script.MT.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\MonitorTypes\Instance.TwoStateMonitorType.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Monitoring" />
+    <Folder Include="Monitoring\Discoverys" />
+    <Folder Include="Monitoring\Monitoring" />
+    <Folder Include="Monitoring\Monitoring\Monitors" />
+    <Folder Include="Resources" />
+    <Folder Include="Presentation" />
+    <Folder Include="Presentation\Folders" />
+    <Folder Include="Presentation\Views" />
+    <Folder Include="Scripts\Administration" />
+    <Folder Include="SecureReferences" />
+    <Folder Include="Scripts" />
+    <Folder Include="TypeDefinitions" />
+    <Folder Include="TypeDefinitions\EntityTypes" />
+    <Folder Include="TypeDefinitions\EntityTypes\ClassTypes" />
+    <Folder Include="TypeDefinitions\EntityTypes\ModuleTypes" />
+    <Folder Include="TypeDefinitions\EntityTypes\MonitorTypes" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\Administration\Add-GrafanaAlertManagerInstance.ps1" />
+    <EmbeddedResource Include="Scripts\Administration\Get-GrafanaAlertManagerInstanace.ps1" />
+    <EmbeddedResource Include="Scripts\Administration\Remove-GrafanaAlertManagerInstance.ps1" />
+    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1" />
+    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1" />
+    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1" />
+    <EmbeddedResource Include="Scripts\Grafana.Instance.ActiveRules_BACK.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\ChangeMe.snk">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ManagementPack.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
+</Project>

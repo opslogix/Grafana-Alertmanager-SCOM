@@ -1,0 +1,1284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Manifest>
+    <Identity>
+      <ID>GrafanaMonitoring</ID>
+      <Version>1.0.0.6</Version>
+    </Identity>
+    <Name>GrafanaMonitoring</Name>
+    <References>
+      <Reference Alias="MSIL">
+        <ID>Microsoft.SystemCenter.InstanceGroup.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="SC">
+        <ID>Microsoft.SystemCenter.Library</ID>
+        <Version>10.22.10118.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="Windows">
+        <ID>Microsoft.Windows.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="Health">
+        <ID>System.Health.Library</ID>
+        <Version>7.0.8447.6</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="System">
+        <ID>System.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+  <TypeDefinitions>
+    <EntityTypes>
+      <ClassTypes>
+        <ClassType ID="Grafana.Instance.AlertRules.Class" Base="System!System.ApplicationComponent" Accessibility="Public" Abstract="false" Hosted="true" Singleton="false">
+          <Property ID="Uid" Key="true" Type="string" />
+          <Property ID="ruleGroup" Key="false" Type="string" />
+          <Property ID="rule" Key="false" Type="string" />
+          <Property ID="condition" Key="false" Type="string" />
+          <Property ID="isPaused" Key="false" Type="string" />
+          <Property ID="labels" Key="false" Type="string" />
+        </ClassType>
+        <ClassType ID="Grafana.Instance.Endpoint.Class" Accessibility="Public" Abstract="false" Base="System!System.ApplicationComponent" Hosted="false" Singleton="false" Extension="false">
+          <Property ID="URL" Key="true" Type="string" />
+        </ClassType>
+        <ClassType ID="Grafana.Instance.InstanceGroup.Class" Base="MSIL!Microsoft.SystemCenter.InstanceGroup" Accessibility="Public" Abstract="false" Hosted="false" Singleton="true"></ClassType>
+        <ClassType ID="Grafana.Instance.ResourcePool" Accessibility="Public" Abstract="false" Base="SC!Microsoft.SystemCenter.ManagementServicePool" Hosted="false" Singleton="true" Extension="false" />
+      </ClassTypes>
+      <RelationshipTypes>
+        <RelationshipType ID="Grafana.Instance.InstanceAlertRules.Relationship" Accessibility="Public" Abstract="false" Base="System!System.Hosting">
+          <Source ID="Source" Type="Grafana.Instance.Endpoint.Class" />
+          <Target ID="Target" Type="Grafana.Instance.AlertRules.Class" />
+        </RelationshipType>
+      </RelationshipTypes>
+    </EntityTypes>
+    <SecureReferences>
+      <SecureReference ID="Grafana.Instance.RunAsProfile" Accessibility="Public" />
+    </SecureReferences>
+    <ModuleTypes>
+      <DataSourceModuleType ID="Grafana.Instance.DataSource.ResourcePool" Accessibility="Public" Batching="false">
+        <Configuration>
+          <xsd:element name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Discovery.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval>$Config/IntervalSeconds$</Interval>
+                    <SyncTime />
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ConditionDetection ID="Mapper" TypeID="System!System.Discovery.ClassSnapshotDataMapper">
+                <ClassId>$MPElement[Name="SC!Microsoft.SystemCenter.ManagementServicePoolWatcher"]$</ClassId>
+                <InstanceSettings>
+                  <Settings>
+                    <Setting>
+                      <Name>$MPElement[Name="SC!Microsoft.SystemCenter.ManagementServicePoolWatcher"]/PoolId$</Name>
+                      <Value>$Target/Id$</Value>
+                    </Setting>
+                    <Setting>
+                      <Name>$MPElement[Name="SC!Microsoft.SystemCenter.ManagementServicePoolWatcher"]/PoolName$</Name>
+                      <Value>$Target/Property[Type="System!System.Entity"]/DisplayName$</Value>
+                    </Setting>
+                    <Setting>
+                      <Name>$MPElement[Name="System!System.Entity"]/DisplayName$</Name>
+                      <Value>$Target/Property[Type="System!System.Entity"]/DisplayName$ Watcher</Value>
+                    </Setting>
+                  </Settings>
+                </InstanceSettings>
+              </ConditionDetection>
+            </MemberModules>
+            <Composition>
+              <Node ID="Mapper">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.Discovery.Data</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="Grafana.Instance.Availability.Script.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Schedule" TypeID="System!System.SimpleScheduler">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <SyncTime></SyncTime>
+              </DataSource>
+              <ProbeAction ID="Probe" TypeID="Grafana.Instance.Availability.Script.PA">
+                <URL>$Config/URL$</URL>
+                <QueryUser>$Config/QueryUser$</QueryUser>
+                <QueryPwd>$Config/QueryPwd$</QueryPwd>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="Probe">
+                <Node ID="Schedule"></Node>
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="Grafana.Instance.PropertyBagProvider" Accessibility="Public" Batching="false">
+        <Configuration>
+          <xsd:element minOccurs="1" name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ScriptName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ScriptBody" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="0" name="Arguments" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="SyncTime" Selector="$Config/SyncTime$" ParameterType="string" />
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Arguments" Selector="$Config/Arguments$" ParameterType="string" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.SimpleScheduler">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <SyncTime>$Config/SyncTime$</SyncTime>
+              </DataSource>
+              <ProbeAction ID="PSProbe" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagTriggerOnlyProbe">
+                <ScriptName>$Config/ScriptName$</ScriptName>
+                <ScriptBody>$Config/ScriptBody$</ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>Arguments</Name>
+                    <Value>$Config/Arguments$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PSProbe">
+                <Node ID="Scheduler" />
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <ProbeActionModuleType ID="Grafana.Instance.Availability.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
+                <ScriptName>Grafana.Instance.Endpoint.Availability.ps1</ScriptName>
+                <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
+param(
+$QueryUser,
+$QueryPwd,
+[string]$URL
+)
+
+### Define Operations Manager objects ###
+$momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
+$propertyBag = $momScriptAPI.CreatePropertyBag();
+	
+$scriptName = "Grafana.Instance.Endpoint.Availability.ps1"
+$version = "1.0"
+$scriptOutput = ""
+
+#Insert Variables
+
+
+function Write-Event($EventID, $Severity, $Message)
+{
+    $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+}
+function Write-InfoEvent($EventID, $Message)
+{
+    Write-Event -EventID $EventID -Severity 0 -Message $Message
+}
+function Write-WarningEvent($EventID, $Message)
+{
+    Write-Event -EventID $EventID -Severity 2 -Message $Message
+}
+function Write-ErrorEvent($EventID, $Message)
+{
+	Write-Event -EventID $EventID -Severity 1 -Message $Message
+}
+function Exit-Script()
+{
+	#EventID should be changed
+    Write-InfoEvent -EventID 5380 -Message $scriptOutput
+	exit
+}
+
+#EventID should be changed
+Write-InfoEvent -EventID 5350 -Message "Running script."
+
+$scriptOutput += "Script started.`n"
+$scriptOutput += "URL: $URL`n"
+
+##Certicate handling
+<#	
+add-type @"
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+public class TrustAllCertsPolicy : ICertificatePolicy {
+public bool CheckValidationResult(
+ServicePoint srvPoint, X509Certificate certificate,
+WebRequest request, int certificateProblem) {
+return true;
+}
+}
+"@
+[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12
+#>
+
+<#
+
+$headers = @{
+    "api_key" = $Password
+    "accept" = "application/json"
+}
+#>
+
+# create Uri
+$baseurl = $URL
+$resourceurl = "/api/health"
+$uri = $baseurl+ $resourceurl
+
+
+# Get share information but output only name, path and description
+
+	
+
+#Null the variables
+$testResult = $null
+$passed = $false
+
+#Number of passes
+$attempt = 0
+$maxattempts = 3
+
+#Connect to Web API in a while loop
+while ($passed -ne $null -and $attempt -lt $maxattempts) {
+        $attempt += 1
+        $scriptOutput += "Number of Attempts: $attempt`n"
+        sleep 10
+
+        try{
+            ## Try to connect to API
+            $scriptOutput += "Trying to connect to: $uri`n"
+			#Request data from WebAPI
+			$testResult = Invoke-RestMethod -Uri $uri -Method Get
+
+            # test response
+            $passed = $testResult
+            $propertyBag.AddValue('Result',"OK")
+			$scriptOutput += "Connection to API a success`n"
+
+        }#try
+
+        catch{
+            if ($attempt -ge $maxattempts){
+                $propertyBag.AddValue('Result',"CRITICAL")
+				$propertyBag.AddValue('ErrorMessage', "$_")
+				$scriptOutput += "Connection to API $URL FAILED`n"
+				$scriptOutput += "ScriptResult: BAD`n"
+				$scriptOutput += "Error: $_`n"
+
+
+                
+                        
+            }#if
+        }#catch
+    }#while
+
+
+### Add property bag values ###
+$propertybag.AddValue('Attempt',"$attempt")
+$propertybag.AddValue('URL',"$URL")
+
+### Return property bag
+$propertyBag
+
+
+#EventID should be changed     
+Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>URL</Name>
+                    <Value>$Config/URL$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryUser</Name>
+                    <Value>$Config/QueryUser$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryPwd</Name>
+                    <Value>$Config/QueryPwd$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>30</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PS"></Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </ProbeActionModuleType>
+    </ModuleTypes>
+    <MonitorTypes>
+      <UnitMonitorType ID="Grafana.Instance.Availability.Script.MT" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Success" NoDetection="false" />
+          <MonitorTypeState ID="Error" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="Grafana.Instance.Availability.Script.DS">
+              <URL>$Config/URL$</URL>
+              <QueryUser>$Config/QueryUser$</QueryUser>
+              <QueryPwd>$Config/QueryPwd$</QueryPwd>
+              <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+            </DataSource>
+            <ConditionDetection ID="FilterSuccess" TypeID="System!System.ExpressionFilter">
+              <Expression>
+                <SimpleExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="String">Property[@Name='Result']</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                    <Value Type="String">OK</Value>
+                  </ValueExpression>
+                </SimpleExpression>
+              </Expression>
+            </ConditionDetection>
+            <ConditionDetection ID="FilterFailure" TypeID="System!System.ExpressionFilter">
+              <Expression>
+                <SimpleExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="String">Property[@Name='Result']</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                    <Value Type="String">CRITICAL</Value>
+                  </ValueExpression>
+                </SimpleExpression>
+              </Expression>
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="FilterSuccess">
+                <Node ID="DS"></Node>
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="FilterFailure">
+                <Node ID="DS"></Node>
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>
+      <UnitMonitorType ID="Grafana.Instance.TwoStateMonitorType" Accessibility="Public">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Error" NoDetection="false" />
+          <MonitorTypeState ID="Success" NoDetection="false" />
+        </MonitorTypeStates>
+        <Configuration>
+          <IncludeSchemaTypes>
+            <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
+          </IncludeSchemaTypes>
+          <xsd:element minOccurs="1" name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ScriptName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="0" name="Arguments" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ScriptBody" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ErrorExpression" type="ExpressionType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="SuccessExpression" type="ExpressionType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="SyncTime" Selector="$Config/SyncTime$" ParameterType="string" />
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Arguments" Selector="$Config/Arguments$" ParameterType="string" />
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="Datasource" TypeID="Grafana.Instance.PropertyBagProvider">
+              <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+              <SyncTime>$Config/SyncTime$</SyncTime>
+              <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              <ScriptName>$Config/ScriptName$</ScriptName>
+              <ScriptBody>$Config/ScriptBody$</ScriptBody>
+              <Arguments>$Config/Arguments$</Arguments>
+            </DataSource>
+            <ConditionDetection ID="ErrorFilter" TypeID="System!System.ExpressionFilter">
+              <Expression>$Config/ErrorExpression$</Expression>
+            </ConditionDetection>
+            <ConditionDetection ID="SuccessFilter" TypeID="System!System.ExpressionFilter">
+              <Expression>$Config/SuccessExpression$</Expression>
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="ErrorFilter">
+                <Node ID="Datasource" />
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="SuccessFilter">
+                <Node ID="Datasource" />
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>
+    </MonitorTypes>
+  </TypeDefinitions>
+  <Monitoring>
+    <Discoveries>
+      <Discovery ID="Grafana.Instance.AlertRules.Discovery" Enabled="false" Target="Grafana.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryClass TypeID="Grafana.Instance.AlertRules.Class" />
+        </DiscoveryTypes>
+        <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+          <IntervalSeconds>14400</IntervalSeconds>
+          <SyncTime />
+          <ScriptName>Grafana.Instance.AlertRules.Discovery.ps1</ScriptName>
+          <ScriptBody><![CDATA[#Define Parameters
+Param(
+$SourceId,
+$ManagedEntityId,
+$URL
+)
+
+### Define Operations Manager objects ###
+$momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
+$DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityId);
+
+
+
+#Define variables
+$scriptName = "Grafana.Instance.AlertRules.Discovery.ps1"
+$version = "1.0"
+$scriptOutput = ""
+
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+
+
+$computerName = [System.Net.DNS]::GetHostByName('').HostName
+
+function Write-Event($EventID, $Severity, $Message)
+{
+            $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+}
+
+function Write-InfoEvent($EventID, $Message)
+{
+            Write-Event -EventID $EventID -Severity 0 -Message $Message
+}
+function Write-WarningEvent($EventID, $Message)
+{
+            Write-Event -EventID $EventID -Severity 2 -Message $Message
+}
+function Write-ErrorEvent($EventID, $Message)
+{
+            Write-Event -EventID $EventID -Severity 1 -Message $Message
+}
+
+Write-InfoEvent -EventID 9200 -Message "Script Started."
+$scriptOutput += "Script running as $whoami.`n"
+$scriptOutput += "Param URL: $URL `n"
+
+####Discovery Script#####
+
+$baseurl = $URL
+$resourceurl = "/api/v1/provisioning/alert-rules"
+$ChecksURI = $baseurl+ $resourceurl
+
+#Null the variables
+$Checks = $null
+$passed = $false
+
+#Number of passes
+$attempt = 0
+$maxattempts = 3
+
+#Connect to Web API in a while loop
+while ($passed -ne 200 -and $attempt -lt $maxattempts) {
+        $attempt += 1
+        $scriptOutput += "Number of Attempts: $attempt`n"
+        sleep 10
+
+        try{
+            ## Try to connect to API
+            $scriptOutput += "Trying to connect to: $ChecksURI`n"
+			#Request data from WebAPI
+            #$ChecksURI = "http://192.168.0.110:3000/api/v1/provisioning/alert-rules"
+            $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET
+            # test response
+            $passed = $Checks.StatusCode
+
+            # $propertyBag.AddValue('ScriptResult',"GOOD")
+			$scriptOutput += "Connection to API a success`n"
+
+        }#try
+
+        catch{
+            if ($attempt -ge $maxattempts){
+				$scriptOutput += "Connection to API $ChecksURI FAILED`n"
+				$scriptOutput += "ScriptResult: BAD`n"
+				$scriptOutput += "Error: $_`n"
+                Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
+                exit
+
+                
+                        
+            }#if
+        }#catch
+    }#while
+
+    $Checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
+    #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
+
+
+	Foreach ($check in $checks) {
+
+		[string]$Uid = ($check).Uid
+		[string]$ruleGroup = ($check).ruleGroup
+        [string]$title = ($check).title
+        [string]$condition = ($check).condition
+        [string]$isPaused = ($check).isPaused
+        [string]$labels = ($check).labels
+
+	
+
+		$scriptOutput += "RuleName: $title`n"
+
+		$Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Grafana.Instance.AlertRules.Class']$")
+		$Inst.AddProperty("$MPElement[Name='Windows!Microsoft.Windows.Computer']/PrincipalName$", $computerName)
+		$Inst.AddProperty("$MPElement[Name='Grafana.Instance.AlertRules.Class']/Uid$", $Uid)
+		$Inst.AddProperty("$MPElement[Name='Grafana.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
+        $Inst.AddProperty("$MPElement[Name='Grafana.Instance.AlertRules.Class']/rule$", $title)
+        $Inst.AddProperty("$MPElement[Name='Grafana.Instance.AlertRules.Class']/condition$", $condition)
+        $Inst.AddProperty("$MPElement[Name='Grafana.Instance.AlertRules.Class']/isPaused$", $isPaused)
+        $Inst.AddProperty("$MPElement[Name='Grafana.Instance.AlertRules.Class']/labels$", $labels)
+		$Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
+   
+
+		$DiscoveryData.AddInstance($Inst)
+		$scriptOutput += "Returning discoverydata: $DiscoveryData`n"
+	}
+
+
+# Return Discovery Items
+$DiscoveryData
+
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$scriptOutput += "Script took: $ScriptTime seconds`n"
+
+
+Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
+          <Parameters>
+            <Parameter>
+              <Name>sourceID</Name>
+              <Value>$MPElement$</Value>
+            </Parameter>
+            <Parameter>
+              <Name>managedEntityID</Name>
+              <Value>$Target/Id$</Value>
+            </Parameter>
+            <Parameter>
+              <Name>URL</Name>
+              <Value>$Target/Property[Type="Grafana.Instance.Endpoint.Class"]/URL$</Value>
+            </Parameter>
+            <Parameter>
+              <Name>QueryUser</Name>
+              <Value>$RunAs[Name="Grafana.Instance.RunAsProfile"]/UserName$</Value>
+            </Parameter>
+            <Parameter>
+              <Name>QueryPwd</Name>
+              <Value>$RunAs[Name="Grafana.Instance.RunAsProfile"]/Password$</Value>
+            </Parameter>
+          </Parameters>
+          <TimeoutSeconds>60</TimeoutSeconds>
+        </DataSource>
+      </Discovery>
+      <Discovery ID="Grafana.Instance.InstanceGroup.Class.Discovery" Enabled="true" Target="Grafana.Instance.Endpoint.Class" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryRelationship TypeID="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities" />
+        </DiscoveryTypes>
+        <DataSource ID="GroupPopulationDataSource" TypeID="SC!Microsoft.SystemCenter.GroupPopulator">
+          <RuleId>$MPElement$</RuleId>
+          <GroupInstanceId>$MPElement[Name="Grafana.Instance.InstanceGroup.Class"]$</GroupInstanceId>
+          <MembershipRules>
+            <MembershipRule>
+              <MonitoringClass>$MPElement[Name="Grafana.Instance.Endpoint.Class"]$</MonitoringClass>
+              <RelationshipClass>$MPElement[Name="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities"]$</RelationshipClass>
+            </MembershipRule>
+            <MembershipRule>
+              <MonitoringClass>$MPElement[Name="Grafana.Instance.AlertRules.Class"]$</MonitoringClass>
+              <RelationshipClass>$MPElement[Name="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities"]$</RelationshipClass>
+            </MembershipRule>
+          </MembershipRules>
+        </DataSource>
+      </Discovery>
+      <Discovery ID="Grafana.Instance.ManagedByPool.Discovery" Enabled="true" Target="Grafana.Instance.ResourcePool" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryRelationship TypeID="SC!Microsoft.SystemCenter.ManagementActionPointShouldManageEntity" />
+        </DiscoveryTypes>
+        <DataSource ID="DS" TypeID="SC!Microsoft.SystemCenter.GroupPopulator">
+          <RuleId>$MPElement$</RuleId>
+          <GroupInstanceId>$Target/Id$</GroupInstanceId>
+          <MembershipRules>
+            <MembershipRule>
+              <MonitoringClass>$MPElement[Name="Grafana.Instance.Endpoint.Class"]$</MonitoringClass>
+              <RelationshipClass>$MPElement[Name="SC!Microsoft.SystemCenter.ManagementActionPointShouldManageEntity"]$</RelationshipClass>
+            </MembershipRule>
+          </MembershipRules>
+        </DataSource>
+      </Discovery>
+      <Discovery ID="Grafana.Instance.ResourcePool.Discovery" Enabled="true" Target="Grafana.Instance.ResourcePool" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryClass TypeID="SC!Microsoft.SystemCenter.ManagementServicePoolWatcher">
+            <Property TypeID="System!System.Entity" PropertyID="DisplayName" />
+            <Property PropertyID="PoolId" />
+            <Property PropertyID="PoolName" />
+          </DiscoveryClass>
+        </DiscoveryTypes>
+        <DataSource ID="DS" TypeID="Grafana.Instance.DataSource.ResourcePool">
+          <IntervalSeconds>86400</IntervalSeconds>
+        </DataSource>
+      </Discovery>
+    </Discoveries>
+    <Monitors>
+      <UnitMonitor ID="Grafana.Instance.Endpoint.Availability.Script.UnitMonitor" Enabled="false" TypeID="Grafana.Instance.Availability.Script.MT" Target="Grafana.Instance.Endpoint.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
+        <Category>Operations</Category>
+        <AlertSettings AlertMessage="Grafana.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
+          <AlertOnState>Error</AlertOnState>
+          <AutoResolve>true</AutoResolve>
+          <AlertPriority>Normal</AlertPriority>
+          <AlertSeverity>Error</AlertSeverity>
+          <AlertParameters>
+            <!--  <AlertParameter1>$Data/Context/Property[@Name='ErrorMessage']$</AlertParameter1>-->
+          </AlertParameters>
+        </AlertSettings>
+        <OperationalStates>
+          <OperationalState ID="Unhealthy" MonitorTypeStateID="Error" HealthState="Error" />
+          <OperationalState ID="Healthy" MonitorTypeStateID="Success" HealthState="Success" />
+        </OperationalStates>
+        <Configuration>
+          <URL>$Target/Property[Type="Grafana.Instance.Endpoint.Class"]/URL$</URL>
+          <QueryUser>$RunAs[Name="Grafana.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Grafana.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <IntervalSeconds>60</IntervalSeconds>
+        </Configuration>
+      </UnitMonitor>
+      <DependencyMonitor ID="Grafana.Instance.AlertRules.DependencyMonitor" Accessibility="Internal" Enabled="true" Target="Grafana.Instance.Endpoint.Class" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="Grafana.Instance.InstanceAlertRules.Relationship" MemberMonitor="Health!System.Health.AvailabilityState">
+        <Category>Custom</Category>
+        <Algorithm>WorstOf</Algorithm>
+        <MemberUnAvailable>Error</MemberUnAvailable>
+      </DependencyMonitor>
+    </Monitors>
+  </Monitoring>
+  <Presentation>
+    <Views>
+      <View ID="Grafana.Instance.InstanceGroup.ActiveAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+        <Category>Operations</Category>
+        <Criteria>
+          <ResolutionState>
+            <StateRange Operator="NotEquals">255</StateRange>
+          </ResolutionState>
+        </Criteria>
+        <Presentation>
+          <ColumnInfo Index="0" SortIndex="0" Width="22" Grouped="true" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Severity</Name>
+            <Id>Severity</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="1" SortIndex="-1" Width="54" Grouped="false" Sorted="false" IsSortable="false" Visible="true" SortOrder="Ascending">
+            <Name>Icon</Name>
+            <Id>Icon</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="2" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Path</Name>
+            <Id>MonitoringObjectPath</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="3" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Source</Name>
+            <Id>MonitoringObjectDisplayName</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="4" SortIndex="-1" Width="22" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Maintenance Mode</Name>
+            <Id>MonitoringObjectInMaintenanceMode</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="5" SortIndex="-1" Width="250" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Name</Name>
+            <Id>Name</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="6" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Resolution State</Name>
+            <Id>ResolutionState</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="7" SortIndex="-1" Width="150" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Created</Name>
+            <Id>TimeRaised</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="8" SortIndex="1" Width="100" Grouped="false" Sorted="true" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Age</Name>
+            <Id>Age</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="9" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Type</Name>
+            <Id>Category</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="10" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Owner</Name>
+            <Id>Owner</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="11" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Priority</Name>
+            <Id>Priority</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="12" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Latency</Name>
+            <Id>Latency</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="13" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Description</Name>
+            <Id>Description</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="14" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Connector</Name>
+            <Id>ConnectorId</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="15" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Forwarding Status</Name>
+            <Id>ConnectorStatus</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="16" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Class</Name>
+            <Id>Class</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="17" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Time in State</Name>
+            <Id>TimeInState</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="18" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 1</Name>
+            <Id>CustomField1</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="19" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 2</Name>
+            <Id>CustomField2</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="20" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 3</Name>
+            <Id>CustomField3</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="21" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 4</Name>
+            <Id>CustomField4</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="22" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 5</Name>
+            <Id>CustomField5</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="23" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 6</Name>
+            <Id>CustomField6</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="24" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 7</Name>
+            <Id>CustomField7</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="25" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 8</Name>
+            <Id>CustomField8</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="26" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 9</Name>
+            <Id>CustomField9</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="27" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 10</Name>
+            <Id>CustomField10</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="28" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Resolved By</Name>
+            <Id>ResolvedBy</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="29" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Time Resolved</Name>
+            <Id>TimeResolved</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="30" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Last State Change</Name>
+            <Id>TimeResolutionStateLastModified</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="31" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Last Modified</Name>
+            <Id>LastModified</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="32" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Last Modified By</Name>
+            <Id>LastModifiedBy</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="33" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Management Group</Name>
+            <Id>ManagementGroup</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="34" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Site</Name>
+            <Id>SiteName</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="35" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Repeat Count</Name>
+            <Id>RepeatCount</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="36" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Ticket ID</Name>
+            <Id>TicketId</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="37" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>TFS Work Item ID</Name>
+            <Id>TfsWorkItemId</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="38" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>TFS Work Item Owner</Name>
+            <Id>TfsWorkItemOwner</Id>
+          </ColumnInfo>
+        </Presentation>
+        <Target>$MPElement[Name="Grafana.Instance.InstanceGroup.Class"]$</Target>
+      </View>
+      <View ID="Grafana.Instance.InstanceGroup.ClosedAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+        <Category>Operations</Category>
+        <Criteria>
+          <ResolutionState>
+            <StateRange Operator="Equals">255</StateRange>
+          </ResolutionState>
+        </Criteria>
+        <Presentation>
+          <ColumnInfo Index="0" SortIndex="0" Width="22" Grouped="true" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Severity</Name>
+            <Id>Severity</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="1" SortIndex="-1" Width="54" Grouped="false" Sorted="false" IsSortable="false" Visible="true" SortOrder="Ascending">
+            <Name>Icon</Name>
+            <Id>Icon</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="2" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Path</Name>
+            <Id>MonitoringObjectPath</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="3" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Source</Name>
+            <Id>MonitoringObjectDisplayName</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="4" SortIndex="-1" Width="22" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Maintenance Mode</Name>
+            <Id>MonitoringObjectInMaintenanceMode</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="5" SortIndex="-1" Width="250" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Name</Name>
+            <Id>Name</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="6" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Resolution State</Name>
+            <Id>ResolutionState</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="7" SortIndex="-1" Width="150" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Created</Name>
+            <Id>TimeRaised</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="8" SortIndex="1" Width="100" Grouped="false" Sorted="true" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Age</Name>
+            <Id>Age</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="9" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Type</Name>
+            <Id>Category</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="10" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Owner</Name>
+            <Id>Owner</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="11" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Priority</Name>
+            <Id>Priority</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="12" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Latency</Name>
+            <Id>Latency</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="13" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Description</Name>
+            <Id>Description</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="14" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Connector</Name>
+            <Id>ConnectorId</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="15" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Forwarding Status</Name>
+            <Id>ConnectorStatus</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="16" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Class</Name>
+            <Id>Class</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="17" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Time in State</Name>
+            <Id>TimeInState</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="18" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 1</Name>
+            <Id>CustomField1</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="19" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 2</Name>
+            <Id>CustomField2</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="20" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 3</Name>
+            <Id>CustomField3</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="21" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 4</Name>
+            <Id>CustomField4</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="22" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 5</Name>
+            <Id>CustomField5</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="23" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 6</Name>
+            <Id>CustomField6</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="24" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 7</Name>
+            <Id>CustomField7</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="25" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 8</Name>
+            <Id>CustomField8</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="26" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 9</Name>
+            <Id>CustomField9</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="27" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Custom Field 10</Name>
+            <Id>CustomField10</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="28" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Resolved By</Name>
+            <Id>ResolvedBy</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="29" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Time Resolved</Name>
+            <Id>TimeResolved</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="30" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Last State Change</Name>
+            <Id>TimeResolutionStateLastModified</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="31" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Last Modified</Name>
+            <Id>LastModified</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="32" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Last Modified By</Name>
+            <Id>LastModifiedBy</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="33" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Management Group</Name>
+            <Id>ManagementGroup</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="34" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Site</Name>
+            <Id>SiteName</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="35" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Repeat Count</Name>
+            <Id>RepeatCount</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="36" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Ticket ID</Name>
+            <Id>TicketId</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="37" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>TFS Work Item ID</Name>
+            <Id>TfsWorkItemId</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="38" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>TFS Work Item Owner</Name>
+            <Id>TfsWorkItemOwner</Id>
+          </ColumnInfo>
+        </Presentation>
+        <Target>$MPElement[Name="Grafana.Instance.InstanceGroup.Class"]$</Target>
+      </View>
+      <View ID="Grafana.Instance.AlertRules.State.View" Accessibility="Public" Enabled="true" Target="Grafana.Instance.AlertRules.Class" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+        <Category>Operations</Category>
+        <Criteria />
+        <Presentation />
+        <Target />
+      </View>
+      <View ID="Grafana.Instance.Endpoint.State.View" Accessibility="Public" Enabled="true" Target="Grafana.Instance.Endpoint.Class" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+        <Category>Operations</Category>
+        <Criteria />
+        <Presentation />
+        <Target />
+      </View>
+      <View ID="Grafana.Instance.ResourcePool.State.View" Accessibility="Public" Enabled="true" Target="Grafana.Instance.ResourcePool" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+        <Category>Operations</Category>
+        <Criteria />
+        <Presentation>
+          <ColumnInfo Index="0" SortIndex="0" Width="100" Grouped="false" Sorted="true" IsSortable="true" Visible="true" SortOrder="Descending">
+            <Name>State</Name>
+            <Id>Grafana.Instance.ResourcePool.Class</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="1" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Maintenance Mode</Name>
+            <Id>InMaintenanceMode</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="2" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="false" SortOrder="Ascending">
+            <Name>Display Name</Name>
+            <Id>System.Entity/DisplayName</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="3" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Path</Name>
+            <Id>Path</Id>
+          </ColumnInfo>
+        </Presentation>
+        <Target />
+      </View>
+    </Views>
+    <Folders>
+      <Folder ID="Grafana.Root.Folder" Accessibility="Public" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
+    </Folders>
+    <FolderItems>
+      <FolderItem ElementID="Grafana.Instance.InstanceGroup.ActiveAlert.View" ID="Grafana.Instance.InstanceGroup.ActiveAlert.View.FolderItem" Folder="Grafana.Root.Folder" />
+      <FolderItem ElementID="Grafana.Instance.InstanceGroup.ClosedAlert.View" ID="Grafana.Instance.InstanceGroup.ClosedAlert.View.FolderItem" Folder="Grafana.Root.Folder" />
+      <FolderItem ElementID="Grafana.Instance.AlertRules.State.View" ID="Grafana.Instance.AlertRules.State.View.FolderItem" Folder="Grafana.Root.Folder" />
+      <FolderItem ElementID="Grafana.Instance.Endpoint.State.View" ID="Grafana.Instance.Endpoint.State.View.FolderItem" Folder="Grafana.Root.Folder" />
+      <FolderItem ElementID="Grafana.Instance.ResourcePool.State.View" ID="Grafana.Instance.ResourcePool.State.View.FolderItem" Folder="Grafana.Root.Folder" />
+    </FolderItems>
+    <StringResources>
+      <StringResource ID="Grafana.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage"></StringResource>
+    </StringResources>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Grafana.Monitoring">
+          <Name>Grafana Monitoring</Name>
+          <Description>Grafana Monitoring</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Discovery">
+          <Name>Grafana Instance Alert Rules Discovery</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.InstanceGroup.Class.Discovery">
+          <Name>Populates Server Certificate Class into Monitoring Probe 1 Generic InstanceGroup</Name>
+          <Description>Populates Server Certificate objects into 'Generic InstanceGroup' group.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.ManagedByPool.Discovery">
+          <Name>Grafana Resource Pool Discovery ( Cluster Managed by Resource Pool)</Name>
+          <Description>This discovery populates all instances of Endpoint Class that should be managed under the Grafana Resource Pool.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.ResourcePool.Discovery">
+          <Name>Grafana (Resource Pool Discovery)</Name>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Availability.Script.PA">
+          <Name>Endpoint API Availability Probe Action</Name>
+          <Description>This is a probe action that runs the Grafana.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Availability.Script.DS">
+          <Name>Endpoint API Availability Data Source</Name>
+          <Description>This is the data source that runs the Grafana.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Availability.Script.DS" SubElementID="IntervalSeconds">
+          <Name>IntervalSeconds</Name>
+          <Description>IntervalSeconds</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Availability.Script.MT">
+          <Name>Endpoint API Availability Monitor Type</Name>
+          <Description>This is the monitor type that runs the Grafana.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Endpoint.Availability.Script.UnitMonitor">
+          <Name>Endpoint API Availability Monitor</Name>
+          <Description>This is the monitor type that runs the Grafana.Instance.Endpoint.Availability.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
+          <Name>Endpoint API Availability Monitor is in an error state.</Name>
+          <Description>The monitor which runs the Grafana.Instance.Endpoint.Availability.ps1 script is in an error state.</Description>
+          <!--
+              To insert parameters from the property bag, use {x} for each parameter specified under <AlertParameters> (see further up).
+              AlertParameter1 = {0}
+              AlertParameter2 = {1}
+              ...
+            -->
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Root.Folder">
+          <Name>Grafana Labs</Name>
+          <Description>Grafana Labs Root Folder</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.InstanceGroup.ActiveAlert.View">
+          <Name>Active Alerts</Name>
+          <Description>All active alerts in Generic Probe for objects in All Instance Group</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.InstanceGroup.ClosedAlert.View">
+          <Name>Closed Alerts</Name>
+          <Description>All closed alerts in Grafana for objects in All Instance Group</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.State.View">
+          <Name>Alert Rule Instances</Name>
+          <Description>State of all Grafana Alert Rule instances</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Endpoint.State.View">
+          <Name>Endpoint State</Name>
+          <Description>State of all Grafana Endpoint instances</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.ResourcePool.State.View">
+          <Name>Resource Pool State</Name>
+          <Description>Current state of the Resource Pool</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.RunAsProfile">
+          <Name>Grafana Run As Profile</Name>
+          <Description>This profile is used for discovery and monitoring for Grafana API</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class">
+          <Name>Grafana Alert Rules</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class" SubElementID="Uid">
+          <Name>Uid</Name>
+          <Description>Uid</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class" SubElementID="ruleGroup">
+          <Name>ruleGroup</Name>
+          <Description>ruleGroup</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class" SubElementID="rule">
+          <Name>rule</Name>
+          <Description>rule</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class" SubElementID="condition">
+          <Name>condition</Name>
+          <Description>condition</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class" SubElementID="isPaused">
+          <Name>isPaused</Name>
+          <Description>isPaused</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.Class" SubElementID="labels">
+          <Name>labels</Name>
+          <Description>labels</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.InstanceAlertRules.Relationship">
+          <Name>InstanceAlertRule relationship</Name>
+          <Description>InstanceAlertRule relationship</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.AlertRules.DependencyMonitor">
+          <Name>Alert Rule Dependency Monitor </Name>
+          <Description>Grafana Instance Depends on Alert Rule</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Endpoint.Class">
+          <Name>Grafana Instance Endpoint</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.Endpoint.Class" SubElementID="URL">
+          <Name>URL</Name>
+          <Description>URL</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.InstanceGroup.Class">
+          <Name>Grafana All Instances Group</Name>
+          <Description>All instances running under Grafana</Description>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.ResourcePool">
+          <Name>Grafana Resource Pool</Name>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.DataSource.ResourcePool">
+          <Name>Grafana (Resource Pool Watcher Discovery Data Source)</Name>
+        </DisplayString>
+        <DisplayString ElementID="Grafana.Instance.DataSource.ResourcePool" SubElementID="IntervalSeconds">
+          <Name>Interval Seconds</Name>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="Grafana.Instance.Endpoint.Availability.Script.UnitMonitor" Visible="true">
+          <MamlContent xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+            <maml:section>
+              <maml:title>Summary</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Causes</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Configuration</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Resolution</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPack>

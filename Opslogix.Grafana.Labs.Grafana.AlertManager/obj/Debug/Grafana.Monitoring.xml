@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Manifest>
+    <Identity>
+      <ID>Grafana.Monitoring</ID>
+      <Version>1.0.0.59</Version>
+    </Identity>
+    <Name>Opslogix.Grafana.Labs.Grafana.AlertManager</Name>
+    <References>
+      <Reference Alias="System">
+        <ID>System.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager">
+          <Name>Grafana Monitoring</Name>
+          <Description>This Management Pack queries the Grafana AlertManager instance for configured Alert Rules and monitors them in SCOM</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles></KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPack>
