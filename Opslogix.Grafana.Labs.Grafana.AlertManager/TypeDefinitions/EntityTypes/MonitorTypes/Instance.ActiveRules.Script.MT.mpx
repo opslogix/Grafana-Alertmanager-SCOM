@@ -1,0 +1,73 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <MonitorTypes>
+      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.MT" Accessibility="Internal">
+        <MonitorTypeStates>
+          <MonitorTypeState ID="Success" NoDetection="false"/>
+          <MonitorTypeState ID="Error" NoDetection="false"/>
+        </MonitorTypeStates>
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="rule" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="Uid" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1"/>
+          </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int"/>
+        </OverrideableParameters>
+        <MonitorImplementation>
+          <MemberModules>
+            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS">
+              <URL>$Config/URL$</URL>
+              <QueryUser>$Config/QueryUser$</QueryUser>
+              <QueryPwd>$Config/QueryPwd$</QueryPwd>
+              <rule>$Config/rule$</rule>
+              <Uid>$Config/Uid$</Uid>
+              <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+            </DataSource>
+            <ConditionDetection ID="FilterSuccess" TypeID="System!System.ExpressionFilter">
+              <Expression>
+                <SimpleExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="String">Property[@Name='Result']</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                    <Value Type="String">OK</Value>
+                  </ValueExpression>
+                </SimpleExpression>
+              </Expression>
+            </ConditionDetection>
+            <ConditionDetection ID="FilterFailure" TypeID="System!System.ExpressionFilter">
+              <Expression>
+                <SimpleExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="String">Property[@Name='Result']</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                    <Value Type="String">CRITICAL</Value>
+                  </ValueExpression>
+                </SimpleExpression>
+              </Expression>
+            </ConditionDetection>
+          </MemberModules>
+          <RegularDetections>
+            <RegularDetection MonitorTypeStateID="Success">
+              <Node ID="FilterSuccess">
+                <Node ID="DS"></Node>
+              </Node>
+            </RegularDetection>
+            <RegularDetection MonitorTypeStateID="Error">
+              <Node ID="FilterFailure">
+                <Node ID="DS"></Node>
+              </Node>
+            </RegularDetection>
+          </RegularDetections>
+        </MonitorImplementation>
+      </UnitMonitorType>
+    </MonitorTypes>
+  </TypeDefinitions>
+</ManagementPackFragment>

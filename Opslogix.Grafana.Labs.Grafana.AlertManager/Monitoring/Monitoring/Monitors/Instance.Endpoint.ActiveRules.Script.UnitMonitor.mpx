@@ -1,0 +1,96 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Monitoring>
+    <Monitors>
+      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor" Enabled="true" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.MT"
+                  Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
+        <Category>Operations</Category>
+        <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
+          <AlertOnState>Error</AlertOnState>
+          <AutoResolve>true</AutoResolve>
+          <AlertPriority>Normal</AlertPriority>
+          <AlertSeverity>Error</AlertSeverity>
+          <AlertParameters>
+            <AlertParameter1>$Data/Context/Property[@Name='AlertSummary']$</AlertParameter1>
+            <AlertParameter2>$Data/Context/Property[@Name='rule']$</AlertParameter2>
+            <!--  <AlertParameter1>$Data/Context/Property[@Name='ErrorMessage']$</AlertParameter1>-->
+          </AlertParameters>
+        </AlertSettings>
+        <OperationalStates>
+          <OperationalState ID="Unhealthy" MonitorTypeStateID="Error" HealthState="Error"/>
+          <OperationalState ID="Healthy" MonitorTypeStateID="Success" HealthState="Success"/>
+        </OperationalStates>
+        <Configuration>
+          <URL>$Target/Host/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]/URL$</URL>
+          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <rule>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"]/rule$</rule>
+          <Uid>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"]/Uid$</Uid>
+          <IntervalSeconds>60</IntervalSeconds>
+        </Configuration>
+      </UnitMonitor>
+    </Monitors>
+  </Monitoring>
+  <Presentation>
+    <StringResources>
+      <StringResource ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage"></StringResource>
+    </StringResources>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.PA" >
+          <Name>Grafana Active Alerts Probe Action</Name>
+          <Description>This is a probe action that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS">
+          <Name>Grafana Active Alerts Data Source</Name>
+          <Description>This is the data source that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS" SubElementID="IntervalSeconds">
+          <Name>IntervalSeconds</Name>
+          <Description>IntervalSeconds</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.MT">
+          <Name>Grafana Active Alerts Monitor Type</Name>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor">
+          <Name>Grafana Active Alerts Monitor</Name>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
+          <Name>[Grafana] Alert Raised</Name>
+          <Description>{0}</Description>
+          <!--
+              To insert parameters from the property bag, use {x} for each parameter specified under <AlertParameters> (see further up).
+              AlertParameter1 = {0}
+              AlertParameter2 = {1}
+              ...
+            -->
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor" Visible="true">
+          <MamlContent xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+            <maml:section>
+              <maml:title>Summary</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Causes</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Configuration</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+            <maml:section>
+              <maml:title>Resolution</maml:title>
+              <maml:para></maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>
