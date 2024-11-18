@@ -3,7 +3,7 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager">
-          <Name>Opslogix Grafana Labs Grafana AlertManager</Name>
+          <Name>Opslogix Grafana Labs Grafana Alert Manager</Name>
           <Description></Description>
         </DisplayString>
       </DisplayStrings>

@@ -11,9 +11,11 @@ $QueryPwd,
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 
 $scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1"
-$version = "2.0"
+$version = "1.0.1"
 $scriptOutput = ""
 
+$OrgId = 1
+$ServiceAccountToken="glsa_AxnFjeFr9mzOaMs6hZtje95ZMlDmCr1M_03fb8c73"
 
 # Event log functions
 function Write-Event($EventID, $Severity, $Message) {
@@ -35,7 +37,13 @@ function Exit-Script() {
 }
 
 # Get the active alerts from Grafana AlertManager API
-$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get
+$WebRequestHeaders = @{
+    "Accept" = "application/json"
+    "Content-Type" = "application/json"
+    "X-Grafana-Org-Id" = "$OrgId"
+    "Authorization" = "Bearer $ServiceAccountToken"
+}
+$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
 # Filter the response to match the specific rule (alertname)
 $filteredAlerts = $response | Where-Object { $_.labels.alertname -eq $rule }

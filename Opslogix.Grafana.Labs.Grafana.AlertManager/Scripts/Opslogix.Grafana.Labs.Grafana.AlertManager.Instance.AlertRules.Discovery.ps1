@@ -10,11 +10,13 @@ $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityId);
 
 
-
 #Define variables
 $scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1"
-$version = "1.0"
+$version = "1.0.2"
 $scriptOutput = ""
+
+$OrgId = 1
+$ServiceAccountToken="glsa_AxnFjeFr9mzOaMs6hZtje95ZMlDmCr1M_03fb8c73"
 
 # Gather the start time of the script
 $StartTime = Get-Date
@@ -70,28 +72,20 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
             ## Try to connect to API
             $scriptOutput += "Trying to connect to: $ChecksURI`n"
 			#Request data from WebAPI
-            #$ChecksURI = "http://192.168.0.110:3000/api/v1/provisioning/alert-rules"
-            
-            ## Custom work for basic Authorization, need to switch to token based later due less users used in licensing,
-            $OrgId = 2
-            $ServiceAccountName="SCOM"
-            $ServiceAccountTokenName="sa-1-scom-bf6e6c1e-3a40-4468-9aca-d0aafa5a2e28"
-            $ServiceAccountToken="glsa_E22xHS2Aj1qmZmEqmlOUJOMQWiR2IaVh_39001c47"
-            $base64AuthInfo ="YWRtaW46b0JyYW5aMzJHdDc2eUBw"
-            $$WebRequestHeaders = @{
-                        "Accept" = "application/json"
-                        "Content-Type" = "application/json"
-                        "X-Grafana-Org-Id" = "1"
-                        "Authorization" = "Basic $base64AuthInfo"
-                         }
 
+            $WebRequestHeaders = @{
+                "Accept" = "application/json"
+                "Content-Type" = "application/json"
+                "X-Grafana-Org-Id" = "1"
+                "Authorization" = "Bearer $ServiceAccountToken"
+            }
             $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
             # test response
             $passed = $Checks.StatusCode
 
             # $propertyBag.AddValue('ScriptResult',"GOOD")
 			$scriptOutput += "Connection to API a success`n"
-            $scriptOutput += "URI som while loopen använder: $ChecksURI`n"
+            $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
 
         }#try
 
@@ -111,9 +105,8 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
 
     $checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
     #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
-
-
-	Foreach ($check in $checks.Content | ConvertFrom-Json) {
+   
+	Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
 
 		[string]$Uid = ($check).Uid
 		[string]$ruleGroup = ($check).ruleGroup
