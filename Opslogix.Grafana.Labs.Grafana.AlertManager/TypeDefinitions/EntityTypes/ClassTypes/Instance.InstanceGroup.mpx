@@ -2,7 +2,7 @@
   <TypeDefinitions>
     <EntityTypes>
       <ClassTypes>
-        <ClassType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class" Base="MSIL!Microsoft.SystemCenter.InstanceGroup"
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class" Base="MSIL!Microsoft.SystemCenter.InstanceGroup"
             Accessibility="Public" Abstract="false" Hosted="false" Singleton="true">
         </ClassType>
       </ClassTypes>
@@ -11,7 +11,7 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class">
           <Name>Grafana All Instances Group</Name>
           <Description>All instances running under Grafana</Description>
         </DisplayString>

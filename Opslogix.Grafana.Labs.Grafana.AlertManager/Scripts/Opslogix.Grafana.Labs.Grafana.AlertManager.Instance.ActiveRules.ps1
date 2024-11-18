@@ -10,7 +10,7 @@ $QueryPwd,
 ### Define Operations Manager objects ###
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 
-$scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1"
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1"
 $version = "1.0.1"
 $scriptOutput = ""
 
@@ -36,14 +36,14 @@ function Exit-Script() {
     exit
 }
 
-# Get the active alerts from Grafana AlertManager API
+# Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
     "Accept" = "application/json"
     "Content-Type" = "application/json"
     "X-Grafana-Org-Id" = "$OrgId"
     "Authorization" = "Bearer $ServiceAccountToken"
 }
-$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+$response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
 # Filter the response to match the specific rule (alertname)
 $filteredAlerts = $response | Where-Object { $_.labels.alertname -eq $rule }

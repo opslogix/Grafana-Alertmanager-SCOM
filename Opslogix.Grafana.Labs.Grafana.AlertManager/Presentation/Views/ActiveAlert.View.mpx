@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Presentation>
     <Views>
-      <View ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity"
+      <View ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity"
             TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Operations</Category>
         <Criteria>
@@ -167,19 +167,19 @@
             <Id>TfsWorkItemOwner</Id>
           </ColumnInfo>
         </Presentation>
-        <Target>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class"]$</Target>
+        <Target>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class"]$</Target>
       </View>
     </Views>
     <FolderItems>
-      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View"
-                  ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View.FolderItem"
-                  Folder="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" />
+      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View"
+                  ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View.FolderItem"
+                  Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
     </FolderItems>
   </Presentation>
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View">
           <Name>Active Alerts</Name>
           <Description>All active alerts in Generic Probe for objects in All Instance Group</Description>
         </DisplayString>

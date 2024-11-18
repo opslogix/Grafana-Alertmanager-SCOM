@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <TypeDefinitions>
     <ModuleTypes>
-      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.PropertyBagProvider" Accessibility="Public" Batching="false">
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.PropertyBagProvider" Accessibility="Public" Batching="false">
         <Configuration>
           <xsd:element minOccurs="1" name="IntervalSeconds" type="xsd:integer" />
           <xsd:element minOccurs="1" name="SyncTime" type="xsd:string" />

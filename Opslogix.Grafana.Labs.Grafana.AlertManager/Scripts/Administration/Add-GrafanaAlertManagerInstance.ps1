@@ -1,4 +1,4 @@
-﻿$ClassName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"
+﻿$ClassName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"
 
 $GrafanaDisplayName = "" # Friendly Name eg "Grafana Instance X"
 $GrafanaEndpointURL = "" # Enter Grafana URL <httpORhttps>://<IPorFQDN>:<Port>

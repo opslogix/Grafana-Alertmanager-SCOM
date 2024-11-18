@@ -1,4 +1,4 @@
-﻿$ClassName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"
+﻿$ClassName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"
 $GrafanaDisplayName = "<DisplayName of Grafana Instance>" # Enter DisplayName of Grafana Instance
 
 ## Start execution

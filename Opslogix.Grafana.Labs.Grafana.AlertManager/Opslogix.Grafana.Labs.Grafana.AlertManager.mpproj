@@ -2,9 +2,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProjectGuid>{860ef8d6-92dc-4ffb-ad29-cfcafc05d1ad}</ProjectGuid>
-    <RootNamespace>Opslogix.Grafana.Labs.Grafana.AlertManager</RootNamespace>
-    <Name>Opslogix Grafana Labs Grafana AlertManager</Name>
-    <ManagementPackName>Opslogix.Grafana.Labs.Grafana.AlertManager</ManagementPackName>
+    <RootNamespace>Opslogix.Grafana.Labs.Grafana.Alertmanager</RootNamespace>
+    <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
+    <ManagementPackName>Opslogix.Grafana.Labs.Grafana.Alertmanager</ManagementPackName>
     <Version>1.0.0.0</Version>
     <MpFrameworkVersion>v7.0.5</MpFrameworkVersion>
     <MpFrameworkProfile>OM</MpFrameworkProfile>

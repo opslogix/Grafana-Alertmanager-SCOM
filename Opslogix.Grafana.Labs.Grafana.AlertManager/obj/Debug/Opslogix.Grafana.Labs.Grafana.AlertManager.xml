@@ -2,10 +2,10 @@
 <ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Manifest>
     <Identity>
-      <ID>Opslogix.Grafana.Labs.Grafana.AlertManager</ID>
-      <Version>1.0.0.86</Version>
+      <ID>Opslogix.Grafana.Labs.Grafana.Alertmanager</ID>
+      <Version>1.0.0.91</Version>
     </Identity>
-    <Name>Opslogix Grafana Labs Grafana AlertManager</Name>
+    <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
     <References>
       <Reference Alias="MSIL">
         <ID>Microsoft.SystemCenter.InstanceGroup.Library</ID>
@@ -37,7 +37,7 @@
   <TypeDefinitions>
     <EntityTypes>
       <ClassTypes>
-        <ClassType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" Base="System!System.ApplicationComponent" Accessibility="Public" Abstract="false" Hosted="true" Singleton="false">
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" Base="System!System.ApplicationComponent" Accessibility="Public" Abstract="false" Hosted="true" Singleton="false">
           <Property ID="Uid" Key="true" Type="string" />
           <Property ID="ruleGroup" Key="false" Type="string" />
           <Property ID="rule" Key="false" Type="string" />
@@ -45,24 +45,24 @@
           <Property ID="isPaused" Key="false" Type="string" />
           <Property ID="labels" Key="false" Type="string" />
         </ClassType>
-        <ClassType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" Accessibility="Public" Abstract="false" Base="System!System.ApplicationComponent" Hosted="false" Singleton="false" Extension="false">
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Public" Abstract="false" Base="System!System.ApplicationComponent" Hosted="false" Singleton="false" Extension="false">
           <Property ID="URL" Key="true" Type="string" />
         </ClassType>
-        <ClassType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class" Base="MSIL!Microsoft.SystemCenter.InstanceGroup" Accessibility="Public" Abstract="false" Hosted="false" Singleton="true"></ClassType>
-        <ClassType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool" Accessibility="Public" Abstract="false" Base="SC!Microsoft.SystemCenter.ManagementServicePool" Hosted="false" Singleton="true" Extension="false" />
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class" Base="MSIL!Microsoft.SystemCenter.InstanceGroup" Accessibility="Public" Abstract="false" Hosted="false" Singleton="true"></ClassType>
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" Accessibility="Public" Abstract="false" Base="SC!Microsoft.SystemCenter.ManagementServicePool" Hosted="false" Singleton="true" Extension="false" />
       </ClassTypes>
       <RelationshipTypes>
-        <RelationshipType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceAlertRules.Relationship" Accessibility="Public" Abstract="false" Base="System!System.Hosting">
-          <Source ID="Source" Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" />
-          <Target ID="Target" Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" />
+        <RelationshipType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship" Accessibility="Public" Abstract="false" Base="System!System.Hosting">
+          <Source ID="Source" Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" />
+          <Target ID="Target" Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" />
         </RelationshipType>
       </RelationshipTypes>
     </EntityTypes>
     <SecureReferences>
-      <SecureReference ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile" Accessibility="Public" />
+      <SecureReference ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile" Accessibility="Public" />
     </SecureReferences>
     <ModuleTypes>
-      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool" Accessibility="Public" Batching="false">
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool" Accessibility="Public" Batching="false">
         <Configuration>
           <xsd:element name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
@@ -110,7 +110,7 @@
         </ModuleImplementation>
         <OutputType>System!System.Discovery.Data</OutputType>
       </DataSourceModuleType>
-      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS" Accessibility="Internal" Batching="false">
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS" Accessibility="Internal" Batching="false">
         <Configuration>
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -129,7 +129,7 @@
                 <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
                 <SyncTime></SyncTime>
               </DataSource>
-              <ProbeAction ID="Probe" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.PA">
+              <ProbeAction ID="Probe" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.PA">
                 <URL>$Config/URL$</URL>
                 <QueryUser>$Config/QueryUser$</QueryUser>
                 <QueryPwd>$Config/QueryPwd$</QueryPwd>
@@ -146,7 +146,7 @@
         </ModuleImplementation>
         <OutputType>System!System.PropertyBagData</OutputType>
       </DataSourceModuleType>
-      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.DS" Accessibility="Internal" Batching="false">
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS" Accessibility="Internal" Batching="false">
         <Configuration>
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -163,7 +163,7 @@
                 <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
                 <SyncTime></SyncTime>
               </DataSource>
-              <ProbeAction ID="Probe" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.PA">
+              <ProbeAction ID="Probe" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.PA">
                 <URL>$Config/URL$</URL>
                 <QueryUser>$Config/QueryUser$</QueryUser>
                 <QueryPwd>$Config/QueryPwd$</QueryPwd>
@@ -178,7 +178,7 @@
         </ModuleImplementation>
         <OutputType>System!System.PropertyBagData</OutputType>
       </DataSourceModuleType>
-      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.PropertyBagProvider" Accessibility="Public" Batching="false">
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.PropertyBagProvider" Accessibility="Public" Batching="false">
         <Configuration>
           <xsd:element minOccurs="1" name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element minOccurs="1" name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -221,7 +221,7 @@
         </ModuleImplementation>
         <OutputType>System!System.PropertyBagData</OutputType>
       </DataSourceModuleType>
-      <ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
+      <ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
         <Configuration>
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -233,7 +233,7 @@
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1</ScriptName>
+                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1</ScriptName>
                 <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
 param(
 $QueryUser,
@@ -246,7 +246,7 @@ $QueryPwd,
 ### Define Operations Manager objects ###
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 
-$scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1"
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1"
 $version = "1.0.1"
 $scriptOutput = ""
 
@@ -272,14 +272,14 @@ function Exit-Script() {
     exit
 }
 
-# Get the active alerts from Grafana AlertManager API
+# Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
     "Accept" = "application/json"
     "Content-Type" = "application/json"
     "X-Grafana-Org-Id" = "$OrgId"
     "Authorization" = "Bearer $ServiceAccountToken"
 }
-$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+$response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
 # Filter the response to match the specific rule (alertname)
 $filteredAlerts = $response | Where-Object { $_.labels.alertname -eq $rule }
@@ -370,7 +370,7 @@ Write-InfoEvent -EventID 5470 -Message $scriptOutput
         <OutputType>System!System.PropertyBagData</OutputType>
         <InputType>System!System.BaseData</InputType>
       </ProbeActionModuleType>
-      <ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
+      <ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
         <Configuration>
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -380,7 +380,7 @@ Write-InfoEvent -EventID 5470 -Message $scriptOutput
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1</ScriptName>
+                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1</ScriptName>
                 <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
 param(
 $QueryUser,
@@ -392,7 +392,7 @@ $QueryPwd,
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 $propertyBag = $momScriptAPI.CreatePropertyBag();
 	
-$scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1"
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1"
 $version = "1.0"
 $scriptOutput = ""
 
@@ -543,7 +543,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
       </ProbeActionModuleType>
     </ModuleTypes>
     <MonitorTypes>
-      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.MT" Accessibility="Internal">
+      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.MT" Accessibility="Internal">
         <MonitorTypeStates>
           <MonitorTypeState ID="Success" NoDetection="false" />
           <MonitorTypeState ID="Error" NoDetection="false" />
@@ -561,7 +561,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
-            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS">
+            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS">
               <URL>$Config/URL$</URL>
               <QueryUser>$Config/QueryUser$</QueryUser>
               <QueryPwd>$Config/QueryPwd$</QueryPwd>
@@ -610,7 +610,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
           </RegularDetections>
         </MonitorImplementation>
       </UnitMonitorType>
-      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.MT" Accessibility="Internal">
+      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT" Accessibility="Internal">
         <MonitorTypeStates>
           <MonitorTypeState ID="Success" NoDetection="false" />
           <MonitorTypeState ID="Error" NoDetection="false" />
@@ -626,7 +626,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
-            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.DS">
+            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS">
               <URL>$Config/URL$</URL>
               <QueryUser>$Config/QueryUser$</QueryUser>
               <QueryPwd>$Config/QueryPwd$</QueryPwd>
@@ -673,7 +673,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
           </RegularDetections>
         </MonitorImplementation>
       </UnitMonitorType>
-      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.TwoStateMonitorType" Accessibility="Public">
+      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.TwoStateMonitorType" Accessibility="Public">
         <MonitorTypeStates>
           <MonitorTypeState ID="Error" NoDetection="false" />
           <MonitorTypeState ID="Success" NoDetection="false" />
@@ -699,7 +699,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
-            <DataSource ID="Datasource" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.PropertyBagProvider">
+            <DataSource ID="Datasource" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.PropertyBagProvider">
               <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
               <SyncTime>$Config/SyncTime$</SyncTime>
               <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
@@ -732,15 +732,15 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
   </TypeDefinitions>
   <Monitoring>
     <Discoveries>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
-          <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" />
+          <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" />
         </DiscoveryTypes>
         <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
           <IntervalSeconds>14400</IntervalSeconds>
           <SyncTime />
-          <ScriptName>Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1</ScriptName>
+          <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
           <ScriptBody><![CDATA[#Define Parameters
 Param(
 $SourceId,
@@ -754,7 +754,7 @@ $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityI
 
 
 #Define variables
-$scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1"
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
 $version = "1.0.2"
 $scriptOutput = ""
 
@@ -862,14 +862,14 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
 
 		$scriptOutput += "RuleName: $title`n"
 
-		$Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']$")
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class']/URL$", $URL)
-		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/Uid$", $Uid)
-		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/rule$", $title)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/condition$", $condition)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/isPaused$", $isPaused)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/labels$", $labels)
+		$Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
+		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
 		$Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
    
 
@@ -900,41 +900,41 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
             </Parameter>
             <Parameter>
               <Name>URL</Name>
-              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]/URL$</Value>
+              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</Value>
             </Parameter>
             <Parameter>
               <Name>QueryUser</Name>
-              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/UserName$</Value>
+              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</Value>
             </Parameter>
             <Parameter>
               <Name>QueryPwd</Name>
-              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/Password$</Value>
+              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</Value>
             </Parameter>
           </Parameters>
           <TimeoutSeconds>60</TimeoutSeconds>
         </DataSource>
       </Discovery>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="false" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
           <DiscoveryRelationship TypeID="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities" />
         </DiscoveryTypes>
         <DataSource ID="GroupPopulationDataSource" TypeID="SC!Microsoft.SystemCenter.GroupPopulator">
           <RuleId>$MPElement$</RuleId>
-          <GroupInstanceId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class"]$</GroupInstanceId>
+          <GroupInstanceId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class"]$</GroupInstanceId>
           <MembershipRules>
             <MembershipRule>
-              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]$</MonitoringClass>
+              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]$</MonitoringClass>
               <RelationshipClass>$MPElement[Name="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities"]$</RelationshipClass>
             </MembershipRule>
             <MembershipRule>
-              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"]$</MonitoringClass>
+              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]$</MonitoringClass>
               <RelationshipClass>$MPElement[Name="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities"]$</RelationshipClass>
             </MembershipRule>
           </MembershipRules>
         </DataSource>
       </Discovery>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ManagedByPool.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ManagedByPool.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" ConfirmDelivery="true" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
           <DiscoveryRelationship TypeID="SC!Microsoft.SystemCenter.ManagementActionPointShouldManageEntity" />
@@ -944,13 +944,13 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <GroupInstanceId>$Target/Id$</GroupInstanceId>
           <MembershipRules>
             <MembershipRule>
-              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]$</MonitoringClass>
+              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]$</MonitoringClass>
               <RelationshipClass>$MPElement[Name="SC!Microsoft.SystemCenter.ManagementActionPointShouldManageEntity"]$</RelationshipClass>
             </MembershipRule>
           </MembershipRules>
         </DataSource>
       </Discovery>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" ConfirmDelivery="false" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
           <DiscoveryClass TypeID="SC!Microsoft.SystemCenter.ManagementServicePoolWatcher">
@@ -959,15 +959,15 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
             <Property PropertyID="PoolName" />
           </DiscoveryClass>
         </DiscoveryTypes>
-        <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool">
+        <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool">
           <IntervalSeconds>86400</IntervalSeconds>
         </DataSource>
       </Discovery>
     </Discoveries>
     <Monitors>
-      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor" Enabled="true" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
+      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor" Enabled="true" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
         <Category>Operations</Category>
-        <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
+        <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
           <AlertOnState>Error</AlertOnState>
           <AutoResolve>true</AutoResolve>
           <AlertPriority>Normal</AlertPriority>
@@ -983,17 +983,17 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <OperationalState ID="Healthy" MonitorTypeStateID="Success" HealthState="Success" />
         </OperationalStates>
         <Configuration>
-          <URL>$Target/Host/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]/URL$</URL>
-          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/UserName$</QueryUser>
-          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/Password$</QueryPwd>
-          <rule>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"]/rule$</rule>
-          <Uid>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"]/Uid$</Uid>
+          <URL>$Target/Host/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
+          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <rule>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]/rule$</rule>
+          <Uid>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]/Uid$</Uid>
           <IntervalSeconds>60</IntervalSeconds>
         </Configuration>
       </UnitMonitor>
-      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.Script.UnitMonitor" Enabled="false" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
+      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor" Enabled="false" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
         <Category>Operations</Category>
-        <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
+        <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
           <AlertOnState>Error</AlertOnState>
           <AutoResolve>true</AutoResolve>
           <AlertPriority>Normal</AlertPriority>
@@ -1007,13 +1007,13 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <OperationalState ID="Healthy" MonitorTypeStateID="Success" HealthState="Success" />
         </OperationalStates>
         <Configuration>
-          <URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]/URL$</URL>
-          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/UserName$</QueryUser>
-          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
+          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
           <IntervalSeconds>300</IntervalSeconds>
         </Configuration>
       </UnitMonitor>
-      <DependencyMonitor ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.DependencyMonitor" Accessibility="Internal" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceAlertRules.Relationship" MemberMonitor="Health!System.Health.AvailabilityState">
+      <DependencyMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.DependencyMonitor" Accessibility="Internal" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship" MemberMonitor="Health!System.Health.AvailabilityState">
         <Category>Custom</Category>
         <Algorithm>WorstOf</Algorithm>
         <MemberUnAvailable>Error</MemberUnAvailable>
@@ -1022,7 +1022,7 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
   </Monitoring>
   <Presentation>
     <Views>
-      <View ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+      <View ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Operations</Category>
         <Criteria>
           <ResolutionState>
@@ -1187,9 +1187,9 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
             <Id>TfsWorkItemOwner</Id>
           </ColumnInfo>
         </Presentation>
-        <Target>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class"]$</Target>
+        <Target>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class"]$</Target>
       </View>
-      <View ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ClosedAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+      <View ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ClosedAlert.View" Accessibility="Public" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Operations</Category>
         <Criteria>
           <ResolutionState>
@@ -1354,27 +1354,27 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
             <Id>TfsWorkItemOwner</Id>
           </ColumnInfo>
         </Presentation>
-        <Target>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class"]$</Target>
+        <Target>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class"]$</Target>
       </View>
-      <View ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.State.View" Accessibility="Public" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+      <View ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.State.View" Accessibility="Public" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
         <Category>Operations</Category>
         <Criteria />
         <Presentation />
         <Target />
       </View>
-      <View ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.State.View" Accessibility="Public" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+      <View ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.State.View" Accessibility="Public" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
         <Category>Operations</Category>
         <Criteria />
         <Presentation />
         <Target />
       </View>
-      <View ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.State.View" Accessibility="Public" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+      <View ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.State.View" Accessibility="Public" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
         <Category>Operations</Category>
         <Criteria />
         <Presentation>
           <ColumnInfo Index="0" SortIndex="0" Width="100" Grouped="false" Sorted="true" IsSortable="true" Visible="true" SortOrder="Descending">
             <Name>State</Name>
-            <Id>Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.Class</Id>
+            <Id>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.Class</Id>
           </ColumnInfo>
           <ColumnInfo Index="1" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
             <Name>Maintenance Mode</Name>
@@ -1393,59 +1393,59 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
       </View>
     </Views>
     <Folders>
-      <Folder ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" Accessibility="Public" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
+      <Folder ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" Accessibility="Public" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
     </Folders>
     <FolderItems>
-      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View" ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" />
-      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ClosedAlert.View" ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ClosedAlert.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" />
-      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.State.View" ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.State.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" />
-      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.State.View" ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.State.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" />
-      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.State.View" ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.State.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder" />
+      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View" ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
+      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ClosedAlert.View" ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ClosedAlert.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
+      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.State.View" ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.State.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
+      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.State.View" ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.State.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
+      <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.State.View" ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.State.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
     </FolderItems>
     <StringResources>
-      <StringResource ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage"></StringResource>
-      <StringResource ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage"></StringResource>
+      <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage"></StringResource>
+      <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage"></StringResource>
     </StringResources>
   </Presentation>
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery">
           <Name>Grafana Instance Alert Rules Discovery</Name>
           <Description></Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class.Discovery">
           <Name>Populates Server Certificate Class into Monitoring Probe 1 Generic InstanceGroup</Name>
           <Description>Populates Server Certificate objects into 'Generic InstanceGroup' group.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ManagedByPool.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ManagedByPool.Discovery">
           <Name>Grafana Resource Pool Discovery ( Cluster Managed by Resource Pool)</Name>
           <Description>This discovery populates all instances of Endpoint Class that should be managed under the Grafana Resource Pool.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.Discovery">
           <Name>Grafana (Resource Pool Discovery)</Name>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.PA">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.PA">
           <Name>Grafana Active Alerts Probe Action</Name>
-          <Description>This is a probe action that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+          <Description>This is a probe action that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS">
           <Name>Grafana Active Alerts Data Source</Name>
-          <Description>This is the data source that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+          <Description>This is the data source that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.DS" SubElementID="IntervalSeconds">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS" SubElementID="IntervalSeconds">
           <Name>IntervalSeconds</Name>
           <Description>IntervalSeconds</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.MT">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.MT">
           <Name>Grafana Active Alerts Monitor Type</Name>
-          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor">
           <Name>Grafana Active Alerts Monitor</Name>
-          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1 script.</Description>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
           <Name>[Grafana] Alert Raised</Name>
           <Description>{0}</Description>
           <!--
@@ -1455,29 +1455,29 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
               ...
             -->
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.PA">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.PA">
           <Name>Endpoint API Availability Probe Action</Name>
-          <Description>This is a probe action that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1 script.</Description>
+          <Description>This is a probe action that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.DS">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS">
           <Name>Endpoint API Availability Data Source</Name>
-          <Description>This is the data source that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1 script.</Description>
+          <Description>This is the data source that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.DS" SubElementID="IntervalSeconds">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS" SubElementID="IntervalSeconds">
           <Name>IntervalSeconds</Name>
           <Description>IntervalSeconds</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.MT">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT">
           <Name>Endpoint API Availability Monitor Type</Name>
-          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1 script.</Description>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.Script.UnitMonitor">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor">
           <Name>Endpoint API Availability Monitor</Name>
-          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1 script.</Description>
+          <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script.</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
           <Name>Endpoint API Availability Monitor is in an error state.</Name>
-          <Description>The monitor which runs the Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1 script is in an error state.</Description>
+          <Description>The monitor which runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1 script is in an error state.</Description>
           <!--
               To insert parameters from the property bag, use {x} for each parameter specified under <AlertParameters> (see further up).
               AlertParameter1 = {0}
@@ -1485,98 +1485,98 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
               ...
             -->
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Root.Folder">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder">
           <Name>Grafana Labs</Name>
-          <Description>Grafana Labs Grafana AlertManager Root Folder</Description>
+          <Description>Grafana Labs Grafana Alertmanager Root Folder</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ActiveAlert.View">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View">
           <Name>Active Alerts</Name>
           <Description>All active alerts in Generic Probe for objects in All Instance Group</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.ClosedAlert.View">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ClosedAlert.View">
           <Name>Closed Alerts</Name>
           <Description>All closed alerts in Grafana for objects in All Instance Group</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.State.View">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.State.View">
           <Name>Rule Instances</Name>
           <Description>State of all Grafana Alert Rule instances</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.State.View">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.State.View">
           <Name>Endpoint State</Name>
           <Description>State of all Grafana Endpoint instances</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.State.View">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.State.View">
           <Name>Resource Pool State</Name>
           <Description>Current state of the Resource Pool</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile">
-          <Name>Grafana Run As Profile</Name>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile">
+          <Name>Grafana Alertmanager Run As Profile</Name>
           <Description>This profile is used for discovery and monitoring for Grafana API</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class">
           <Name>Grafana Alert Rules</Name>
           <Description></Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="Uid">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="Uid">
           <Name>Uid</Name>
           <Description>Uid</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="ruleGroup">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="ruleGroup">
           <Name>ruleGroup</Name>
           <Description>ruleGroup</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="rule">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="rule">
           <Name>rule</Name>
           <Description>rule</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="condition">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="condition">
           <Name>condition</Name>
           <Description>condition</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="isPaused">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="isPaused">
           <Name>isPaused</Name>
           <Description>isPaused</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="labels">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="labels">
           <Name>labels</Name>
           <Description>labels</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceAlertRules.Relationship">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship">
           <Name>InstanceAlertRule relationship</Name>
           <Description>InstanceAlertRule relationship</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.DependencyMonitor">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.DependencyMonitor">
           <Name>Alert Rule Dependency Monitor </Name>
           <Description>Grafana Instance Depends on Alert Rule</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class">
           <Name>Grafana Instance Endpoint</Name>
           <Description></Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" SubElementID="URL">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" SubElementID="URL">
           <Name>URL</Name>
           <Description>URL</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class">
           <Name>Grafana All Instances Group</Name>
           <Description>All instances running under Grafana</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool">
           <Name>Grafana Resource Pool</Name>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool">
           <Name>Grafana (Resource Pool Watcher Discovery Data Source)</Name>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool" SubElementID="IntervalSeconds">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool" SubElementID="IntervalSeconds">
           <Name>Interval Seconds</Name>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager">
-          <Name>Opslogix Grafana Labs Grafana Alert Manager</Name>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager">
+          <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
           <Description></Description>
         </DisplayString>
       </DisplayStrings>
       <KnowledgeArticles>
-        <KnowledgeArticle ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.Script.UnitMonitor" Visible="true">
+        <KnowledgeArticle ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor" Visible="true">
           <MamlContent xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
             <maml:section>
               <maml:title>Summary</maml:title>
@@ -1596,7 +1596,7 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
             </maml:section>
           </MamlContent>
         </KnowledgeArticle>
-        <KnowledgeArticle ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.Script.UnitMonitor" Visible="true">
+        <KnowledgeArticle ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor" Visible="true">
           <MamlContent xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
             <maml:section>
               <maml:title>Summary</maml:title>

@@ -2,7 +2,7 @@
   <TypeDefinitions>
     <EntityTypes>
       <ClassTypes>
-        <ClassType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" Base="System!System.ApplicationComponent"
+        <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" Base="System!System.ApplicationComponent"
             Accessibility="Public" Abstract="false" Hosted="true" Singleton="false">
           <Property ID="Uid" Key="true" Type="string" />
           <Property ID="ruleGroup" Key="false" Type="string" />
@@ -13,19 +13,19 @@
         </ClassType>
       </ClassTypes>
       <RelationshipTypes>
-        <RelationshipType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceAlertRules.Relationship" Accessibility="Public" Abstract="false" Base="System!System.Hosting" >
-          <Source ID="Source" Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" />
-          <Target ID="Target" Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"/>
+        <RelationshipType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship" Accessibility="Public" Abstract="false" Base="System!System.Hosting" >
+          <Source ID="Source" Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" />
+          <Target ID="Target" Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"/>
         </RelationshipType>
       </RelationshipTypes>
     </EntityTypes>
   </TypeDefinitions>
   <Monitoring>
     <Monitors>
-      <DependencyMonitor ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.DependencyMonitor" Accessibility="Internal" Enabled="true"
-                     Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" ParentMonitorID="Health!System.Health.AvailabilityState"
+      <DependencyMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.DependencyMonitor" Accessibility="Internal" Enabled="true"
+                     Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ParentMonitorID="Health!System.Health.AvailabilityState"
                      Remotable="true" Priority="Normal"
-                     RelationshipType="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceAlertRules.Relationship"
+                     RelationshipType="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship"
                      MemberMonitor="Health!System.Health.AvailabilityState">
         <Category>Custom</Category>
         <Algorithm>WorstOf</Algorithm>
@@ -36,39 +36,39 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class">
           <Name>Grafana Alert Rules</Name>
           <Description></Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="Uid">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="Uid">
           <Name>Uid</Name>
           <Description>Uid</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="ruleGroup">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="ruleGroup">
           <Name>ruleGroup</Name>
           <Description>ruleGroup</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="rule">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="rule">
           <Name>rule</Name>
           <Description>rule</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="condition">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="condition">
           <Name>condition</Name>
           <Description>condition</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="isPaused">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="isPaused">
           <Name>isPaused</Name>
           <Description>isPaused</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" SubElementID="labels">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="labels">
           <Name>labels</Name>
           <Description>labels</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceAlertRules.Relationship">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship">
           <Name>InstanceAlertRule relationship</Name>
           <Description>InstanceAlertRule relationship</Description>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.DependencyMonitor">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.DependencyMonitor">
           <Name>Alert Rule Dependency Monitor </Name>
           <Description>Grafana Instance Depends on Alert Rule</Description>
         </DisplayString>

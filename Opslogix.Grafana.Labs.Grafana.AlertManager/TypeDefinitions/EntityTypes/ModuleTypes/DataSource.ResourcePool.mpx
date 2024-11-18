@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <TypeDefinitions>
     <ModuleTypes>
-      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool" Accessibility="Public" Batching="false">
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool" Accessibility="Public" Batching="false">
         <Configuration>
           <xsd:element name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
@@ -54,10 +54,10 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool">
           <Name>Grafana (Resource Pool Watcher Discovery Data Source)</Name>
         </DisplayString>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool" SubElementID="IntervalSeconds">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool" SubElementID="IntervalSeconds">
           <Name>Interval Seconds</Name>
         </DisplayString>
       </DisplayStrings>

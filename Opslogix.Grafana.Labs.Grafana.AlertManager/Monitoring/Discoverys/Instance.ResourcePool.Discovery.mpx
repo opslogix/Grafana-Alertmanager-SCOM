@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Monitoring>
     <Discoveries>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" ConfirmDelivery="false" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
           <DiscoveryClass TypeID="SC!Microsoft.SystemCenter.ManagementServicePoolWatcher">
@@ -10,7 +10,7 @@
             <Property PropertyID="PoolName" />
           </DiscoveryClass>
         </DiscoveryTypes>
-        <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.DataSource.ResourcePool">
+        <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool">
           <IntervalSeconds>86400</IntervalSeconds>
         </DataSource>
       </Discovery>
@@ -19,7 +19,7 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ResourcePool.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.Discovery">
           <Name>Grafana (Resource Pool Discovery)</Name>
         </DisplayString>
       </DisplayStrings>

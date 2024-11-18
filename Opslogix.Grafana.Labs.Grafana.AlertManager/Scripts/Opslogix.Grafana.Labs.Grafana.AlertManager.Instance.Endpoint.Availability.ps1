@@ -9,7 +9,7 @@ $QueryPwd,
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 $propertyBag = $momScriptAPI.CreatePropertyBag();
 	
-$scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1"
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1"
 $version = "1.0"
 $scriptOutput = ""
 

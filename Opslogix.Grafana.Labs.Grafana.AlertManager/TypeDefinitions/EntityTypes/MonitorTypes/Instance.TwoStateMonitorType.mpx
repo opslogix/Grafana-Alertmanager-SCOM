@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <TypeDefinitions>
     <MonitorTypes>
-      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.TwoStateMonitorType" Accessibility="Public">
+      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.TwoStateMonitorType" Accessibility="Public">
         <MonitorTypeStates>
           <MonitorTypeState ID="Error" NoDetection="false" />
           <MonitorTypeState ID="Success" NoDetection="false" />
@@ -27,7 +27,7 @@
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
-            <DataSource ID="Datasource" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.PropertyBagProvider">
+            <DataSource ID="Datasource" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.PropertyBagProvider">
               <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
               <SyncTime>$Config/SyncTime$</SyncTime>
               <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>

@@ -11,7 +11,7 @@ $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityI
 
 
 #Define variables
-$scriptName = "Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1"
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
 $version = "1.0.2"
 $scriptOutput = ""
 
@@ -119,14 +119,14 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
 
 		$scriptOutput += "RuleName: $title`n"
 
-		$Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']$")
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class']/URL$", $URL)
-		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/Uid$", $Uid)
-		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/rule$", $title)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/condition$", $condition)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/isPaused$", $isPaused)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class']/labels$", $labels)
+		$Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
+		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
+        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
 		$Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
    
 

@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <TypeDefinitions>
     <MonitorTypes>
-      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.MT" Accessibility="Internal">
+      <UnitMonitorType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT" Accessibility="Internal">
         <MonitorTypeStates>
           <MonitorTypeState ID="Success" NoDetection="false"/>
           <MonitorTypeState ID="Error" NoDetection="false"/>
@@ -17,7 +17,7 @@
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
-            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Availability.Script.DS">
+            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.DS">
               <URL>$Config/URL$</URL>
               <QueryUser>$Config/QueryUser$</QueryUser>
               <QueryPwd>$Config/QueryPwd$</QueryPwd>

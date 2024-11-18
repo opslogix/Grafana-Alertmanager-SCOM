@@ -1,21 +1,21 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Monitoring>
     <Discoveries>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="false" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
           <DiscoveryRelationship TypeID="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities" />
         </DiscoveryTypes>
         <DataSource ID="GroupPopulationDataSource" TypeID="SC!Microsoft.SystemCenter.GroupPopulator">
           <RuleId>$MPElement$</RuleId>
-          <GroupInstanceId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class"]$</GroupInstanceId>
+          <GroupInstanceId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class"]$</GroupInstanceId>
           <MembershipRules>
             <MembershipRule>
-              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]$</MonitoringClass>
+              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]$</MonitoringClass>
               <RelationshipClass>$MPElement[Name="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities"]$</RelationshipClass>
             </MembershipRule>
             <MembershipRule>
-              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class"]$</MonitoringClass>
+              <MonitoringClass>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]$</MonitoringClass>
               <RelationshipClass>$MPElement[Name="MSIL!Microsoft.SystemCenter.InstanceGroupContainsEntities"]$</RelationshipClass>
             </MembershipRule>
           </MembershipRules>
@@ -26,7 +26,7 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.InstanceGroup.Class.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class.Discovery">
           <Name>Populates Server Certificate Class into Monitoring Probe 1 Generic InstanceGroup</Name>
           <Description>Populates Server Certificate objects into 'Generic InstanceGroup' group.</Description>
         </DisplayString>

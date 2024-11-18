@@ -1,16 +1,16 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Monitoring>
     <Discoveries>
-      <Discovery ID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
         <Category>Discovery</Category>
         <DiscoveryTypes>
-          <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Class" />
+          <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" />
         </DiscoveryTypes>
         <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
           <IntervalSeconds>14400</IntervalSeconds>
           <SyncTime />
-          <ScriptName>Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1</ScriptName>
-          <ScriptBody>$IncludeFileContent/Scripts/Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1$</ScriptBody>
+          <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
+          <ScriptBody>$IncludeFileContent/Scripts/Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1$</ScriptBody>
           <Parameters>
             <Parameter>
               <Name>sourceID</Name>
@@ -22,15 +22,15 @@
             </Parameter>
             <Parameter>
               <Name>URL</Name>
-              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Class"]/URL$</Value>
+              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</Value>
             </Parameter>
             <Parameter>
               <Name>QueryUser</Name>
-              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/UserName$</Value>
+              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</Value>
             </Parameter>
             <Parameter>
               <Name>QueryPwd</Name>
-              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.RunAsProfile"]/Password$</Value>
+              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</Value>
             </Parameter>
           </Parameters>
           <TimeoutSeconds>60</TimeoutSeconds>
@@ -41,7 +41,7 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery">
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery">
           <Name>Grafana Instance Alert Rules Discovery</Name>
           <Description></Description>
         </DisplayString>
