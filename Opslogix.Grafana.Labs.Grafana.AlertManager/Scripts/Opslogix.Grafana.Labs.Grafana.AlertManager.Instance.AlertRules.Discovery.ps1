@@ -16,7 +16,7 @@ $version = "1.0.2"
 $scriptOutput = ""
 
 $OrgId = 1
-$ServiceAccountToken="glsa_AxnFjeFr9mzOaMs6hZtje95ZMlDmCr1M_03fb8c73"
+$ServiceAccountToken="glsa_9c12tirBqO8fFOjZYvX5lN21wepnqfpm_94adf701"
 
 # Gather the start time of the script
 $StartTime = Get-Date

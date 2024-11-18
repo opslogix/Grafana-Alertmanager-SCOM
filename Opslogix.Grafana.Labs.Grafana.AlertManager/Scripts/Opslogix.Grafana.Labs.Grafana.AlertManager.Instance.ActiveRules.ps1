@@ -11,11 +11,10 @@ $QueryPwd,
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1"
-$version = "1.0.1"
+$version = "1.0.8"
 $scriptOutput = ""
 
-$OrgId = 1
-$ServiceAccountToken="glsa_AxnFjeFr9mzOaMs6hZtje95ZMlDmCr1M_03fb8c73"
+
 
 # Event log functions
 function Write-Event($EventID, $Severity, $Message) {
@@ -36,6 +35,12 @@ function Exit-Script() {
     exit
 }
 
+$OrgId = 1
+$ServiceAccountToken="glsa_AFKINIsjRgAatkWOk5Pk0rezK0B3AJqw_2f574ae8"
+
+Write-InfoEvent -EventID 5470 -Message "QueryPwd"
+Write-InfoEvent -EventID 5470 -Message $QueryPwd
+
 # Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
     "Accept" = "application/json"
@@ -43,14 +48,17 @@ $WebRequestHeaders = @{
     "X-Grafana-Org-Id" = "$OrgId"
     "Authorization" = "Bearer $ServiceAccountToken"
 }
+
 $response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
+
 # Filter the response to match the specific rule (alertname)
-$filteredAlerts = $response | Where-Object { $_.labels.alertname -eq $rule }
+$filteredAlerts = $response | Where-Object { $_.labels.__alert_rule_uid__ -eq $Uid }
 
 # Check if the output is empty (no active rules)
-if ($filteredAlerts -eq $null -or $filteredAlerts.Count -eq 0) {
+if ($null -eq $filteredAlerts -or $filteredAlerts.Count -eq 0) {
     # No active rules = rules is in healthy conditions
+    Write-InfoEvent -EventID 5470 -Message "No active events found, Return ok"
     $alertSummary = "OK, no active Alert Rules in Grafana was found"
     $propertyBag = $momScriptAPI.CreatePropertyBag()
     $propertyBag.AddValue('Result', "OK")
@@ -58,6 +66,7 @@ if ($filteredAlerts -eq $null -or $filteredAlerts.Count -eq 0) {
     $propertyBag
 } else {
     # Build a summary of all active rules
+    Write-InfoEvent -EventID 5470 -Message  "Alert Rule '$rule' is under state Firing:`n`n"
     $alertSummary = "Alert Rule '$rule' is under state Firing:`n`n"
     $alertCount = 0
     foreach ($alert in $filteredAlerts) {
