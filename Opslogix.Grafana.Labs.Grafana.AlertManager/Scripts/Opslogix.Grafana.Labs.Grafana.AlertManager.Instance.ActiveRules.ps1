@@ -36,10 +36,8 @@ function Exit-Script() {
 }
 
 $OrgId = 1
-$ServiceAccountToken="glsa_AFKINIsjRgAatkWOk5Pk0rezK0B3AJqw_2f574ae8"
+$ServiceAccountToken=$QueryPwd
 
-Write-InfoEvent -EventID 5470 -Message "QueryPwd"
-Write-InfoEvent -EventID 5470 -Message $QueryPwd
 
 # Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
@@ -56,7 +54,7 @@ $response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/
 $filteredAlerts = $response | Where-Object { $_.labels.__alert_rule_uid__ -eq $Uid }
 
 # Check if the output is empty (no active rules)
-if ($null -eq $filteredAlerts -or $filteredAlerts.Count -eq 0) {
+if ($null -eq $filteredAlerts -or ($filteredAlerts | Measure-Object).Count -eq 0) {
     # No active rules = rules is in healthy conditions
     Write-InfoEvent -EventID 5470 -Message "No active events found, Return ok"
     $alertSummary = "OK, no active Alert Rules in Grafana was found"
