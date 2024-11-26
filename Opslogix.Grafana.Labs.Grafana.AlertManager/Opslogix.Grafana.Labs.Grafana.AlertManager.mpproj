@@ -69,9 +69,9 @@
     <Compile Include="Monitoring\Discoverys\Instance.ResourcePool.Discovery.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx">
+    <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.Availability.Script.UnitMonitor.mpx">
       <SubType>Code</SubType>
     </Compile>
