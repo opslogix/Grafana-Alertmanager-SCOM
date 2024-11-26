@@ -1,6 +1,7 @@
 ﻿$ClassName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"
 $GrafanaDisplayName = "<DisplayName of Grafana Instance>" # Enter DisplayName of Grafana Instance
 
+
 ## Start execution
 New-SCOMManagementGroupConnection -ComputerName "localhost"
 $MG = Get-SCOMManagementGroup

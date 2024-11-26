@@ -4,7 +4,8 @@ Param(
     $ManagedEntityId,
     [string]$URL,
     $QueryUser,
-    $QueryPwd
+    $QueryPwd,
+    $OrgId
 )
 
 ### Define Operations Manager objects ###
@@ -17,7 +18,7 @@ $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Di
 $version = "1.0.5"
 $scriptOutput = ""
 
-$OrgId = 1
+#$OrgId = 1
 
 $ServiceAccountToken = "$QueryPwd"
 # Gather the start time of the script
