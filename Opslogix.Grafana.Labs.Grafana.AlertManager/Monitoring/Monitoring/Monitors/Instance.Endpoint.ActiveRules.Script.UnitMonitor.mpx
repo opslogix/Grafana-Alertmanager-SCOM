@@ -25,6 +25,7 @@
           <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
           <rule>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]/rule$</rule>
           <Uid>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]/Uid$</Uid>
+          <OrgId>$Target/Host/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</OrgId>
           <IntervalSeconds>60</IntervalSeconds>
         </Configuration>
       </UnitMonitor>

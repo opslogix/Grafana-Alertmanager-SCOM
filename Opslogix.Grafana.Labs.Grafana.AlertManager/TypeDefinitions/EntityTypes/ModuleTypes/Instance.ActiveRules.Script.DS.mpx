@@ -8,6 +8,7 @@
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
           <xsd:element name="rule" type="xsd:string" minOccurs="1"/>
           <xsd:element name="Uid" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="OrgId" type="xsd:integer" minOccurs="1"/>
           <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1"/>
         </Configuration>
         <OverrideableParameters>
@@ -26,6 +27,7 @@
                 <QueryPwd>$Config/QueryPwd$</QueryPwd>
                 <rule>$Config/rule$</rule>
                 <Uid>$Config/Uid$</Uid>
+                <OrgId>$Config/OrgId$</OrgId>
               </ProbeAction>
             </MemberModules>
             <Composition>

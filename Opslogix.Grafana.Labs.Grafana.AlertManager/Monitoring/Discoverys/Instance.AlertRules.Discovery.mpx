@@ -25,6 +25,10 @@
               <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</Value>
             </Parameter>
             <Parameter>
+              <Name>OrgId</Name>
+              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</Value>
+            </Parameter>
+            <Parameter>
               <Name>QueryUser</Name>
               <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</Value>
             </Parameter>

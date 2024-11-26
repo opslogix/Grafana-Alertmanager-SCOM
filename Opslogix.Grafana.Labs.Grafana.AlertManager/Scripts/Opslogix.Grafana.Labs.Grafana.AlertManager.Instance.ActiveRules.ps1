@@ -4,7 +4,8 @@ param(
     $QueryUser,
     $QueryPwd,
     [string]$rule,
-    [string]$Uid
+    [string]$Uid,
+    [int]$OrgId
 )
 
 ### Define Operations Manager objects ###
@@ -30,7 +31,7 @@ function Write-ErrorEvent($EventID, $Message) {
 }
 
 
-$OrgId = 1
+#$OrgId = 1
 $ServiceAccountToken = "$QueryPwd"
 
 #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
