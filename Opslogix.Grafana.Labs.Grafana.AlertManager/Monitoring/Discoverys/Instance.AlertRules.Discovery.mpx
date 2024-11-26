@@ -10,7 +10,7 @@
           <IntervalSeconds>60</IntervalSeconds>
           <SyncTime />
           <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
-          <ScriptBody>$IncludeFileContent/Scripts/Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1$</ScriptBody>
+          <ScriptBody>$IncludeFileContent/Scripts/Instance.AlertRules.Discovery.ps1$</ScriptBody>
           <Parameters>
             <Parameter>
               <Name>sourceID</Name>

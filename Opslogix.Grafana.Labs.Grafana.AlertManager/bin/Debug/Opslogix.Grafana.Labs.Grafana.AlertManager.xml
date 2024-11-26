@@ -3,7 +3,7 @@
   <Manifest>
     <Identity>
       <ID>Opslogix.Grafana.Labs.Grafana.Alertmanager</ID>
-      <Version>1.0.0.119</Version>
+      <Version>1.0.0.123</Version>
     </Identity>
     <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
     <References>
@@ -237,7 +237,7 @@
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1</ScriptName>
+                <ScriptName>Instance.ActiveRules.ps1</ScriptName>
                 <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
 param(
     [string]$URL,
@@ -400,7 +400,7 @@ Write-InfoEvent -EventID 5470 -Message $scriptOutput
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1</ScriptName>
+                <ScriptName>Instance.Endpoint.Availability.ps1</ScriptName>
                 <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
 param(
 $QueryUser,

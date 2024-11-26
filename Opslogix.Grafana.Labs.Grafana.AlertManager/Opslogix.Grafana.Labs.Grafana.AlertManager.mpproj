@@ -158,9 +158,9 @@
     <EmbeddedResource Include="Scripts\Administration\Add-GrafanaAlertManagerInstance.ps1" />
     <EmbeddedResource Include="Scripts\Administration\Get-GrafanaAlertManagerInstanace.ps1" />
     <EmbeddedResource Include="Scripts\Administration\Remove-GrafanaAlertManagerInstance.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.ActiveRules.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.AlertRules.Discovery.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.Endpoint.Availability.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\ChangeMe.snk">

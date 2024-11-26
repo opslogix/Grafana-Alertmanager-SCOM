@@ -11,8 +11,8 @@
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1</ScriptName>
-                <ScriptBody>$IncludeFileContent/Scripts/Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.ps1$</ScriptBody>
+                <ScriptName>Instance.Endpoint.Availability.ps1</ScriptName>
+                <ScriptBody>$IncludeFileContent/Scripts/Instance.Endpoint.Availability.ps1$</ScriptBody>
                 <Parameters>
                   <Parameter>
                     <Name>URL</Name>
