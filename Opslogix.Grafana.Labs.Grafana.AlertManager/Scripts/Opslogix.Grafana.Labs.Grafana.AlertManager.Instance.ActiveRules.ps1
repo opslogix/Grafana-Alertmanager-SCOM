@@ -1,19 +1,18 @@
 ﻿#Insert parameters if necessary, otherwise remove this
 param(
-$QueryUser,
-$QueryPwd,
-[string]$Uid,
-[string]$URL,
-[string]$rule
+    [string]$URL,
+    $QueryUser,
+    $QueryPwd,
+    [string]$rule,
+    [string]$Uid
 )
 
 ### Define Operations Manager objects ###
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1"
-$version = "1.0.8"
+$version = "1.0.9"
 $scriptOutput = ""
-
 
 
 # Event log functions
@@ -36,20 +35,19 @@ function Exit-Script() {
 }
 
 $OrgId = 1
-$ServiceAccountToken="glsa_AFKINIsjRgAatkWOk5Pk0rezK0B3AJqw_2f574ae8"
+$ServiceAccountToken = "$QueryPwd"
 
-Write-InfoEvent -EventID 5470 -Message "QueryPwd"
-Write-InfoEvent -EventID 5470 -Message $QueryPwd
+ #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
 
 # Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
-    "Accept" = "application/json"
-    "Content-Type" = "application/json"
+    "Accept"           = "application/json"
+    "Content-Type"     = "application/json"
     "X-Grafana-Org-Id" = "$OrgId"
-    "Authorization" = "Bearer $ServiceAccountToken"
+    "Authorization"    = "Bearer $ServiceAccountToken"
 }
 
-$response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
 
 # Filter the response to match the specific rule (alertname)
@@ -64,7 +62,8 @@ if ($null -eq $filteredAlerts -or $filteredAlerts.Count -eq 0) {
     $propertyBag.AddValue('Result', "OK")
     $propertyBag.AddValue('AlertSummary', $alertSummary)
     $propertyBag
-} else {
+}
+else {
     # Build a summary of all active rules
     Write-InfoEvent -EventID 5470 -Message  "Alert Rule '$rule' is under state Firing:`n`n"
     $alertSummary = "Alert Rule '$rule' is under state Firing:`n`n"
