@@ -29,15 +29,11 @@ function Write-ErrorEvent($EventID, $Message) {
     Write-Event -EventID $EventID -Severity 1 -Message $Message
 }
 
-function Exit-Script() {
-    Write-InfoEvent -EventID 5480 -Message $scriptOutput
-    exit
-}
 
 $OrgId = 1
 $ServiceAccountToken = "$QueryPwd"
 
- #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
+#Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
 
 # Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
@@ -46,8 +42,15 @@ $WebRequestHeaders = @{
     "X-Grafana-Org-Id" = "$OrgId"
     "Authorization"    = "Bearer $ServiceAccountToken"
 }
-
-$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+# implement try catch otherwise write error event 9201
+try {
+    $response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+}
+catch {
+    Write-ErrorEvent -EventID 9201 -Message "Failed to get active alerts from Grafana Alertmanager API. Error: $_"
+    Exit
+}
+#$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
 
 # Filter the response to match the specific rule (alertname)
