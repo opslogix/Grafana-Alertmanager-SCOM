@@ -48,7 +48,11 @@ $scriptOutput += "Param URL: $URL `n Using access token from Run As Account"
 ####Discovery Script#####
 
 $baseurl = $URL
+
+#### Todo, change to input parameter #
+<#https://github.com/opslogix/Grafana-Alertmanager-SCOM/issues/14#>
 $resourceurl = "/api/v1/provisioning/alert-rules"
+
 $ChecksURI = $baseurl + $resourceurl
 
 #Null the variables
@@ -59,23 +63,30 @@ $passed = $false
 $attempt = 0
 $maxattempts = 3
 
+# Write Error event if $ServiceAccountToken is empty
+if ($null -eq $ServiceAccountToken) {
+    Write-ErrorEvent -EventID 9201 -Message "No Service Account Token found in Run As Account and passed in the script as a parameter. Exiting script."
+    exit
+}
+
+# Web Request Headers with Bearer Token
+$WebRequestHeaders = @{
+    "Accept"           = "application/json"
+    "Content-Type"     = "application/json"
+    "X-Grafana-Org-Id" = "$OrgId"
+    "Authorization"    = "Bearer $ServiceAccountToken"
+}
+
 #Connect to Web API in a while loop
 while ($passed -ne 200 -and $attempt -lt $maxattempts) {
     $attempt += 1
     $scriptOutput += "Number of Attempts: $attempt`n"
-    sleep 10
+    Start-Sleep 10
 
     try {
         ## Try to connect to API
-        $scriptOutput += "Trying to connect to: $ChecksURI`n"
+        $scriptOutput += "Trying to connect to: $ChecksURI`n using token: $ServiceAccountToken`n"
         #Request data from WebAPI
-
-        $WebRequestHeaders = @{
-            "Accept"           = "application/json"
-            "Content-Type"     = "application/json"
-            "X-Grafana-Org-Id" = "1"
-            "Authorization"    = "Bearer $ServiceAccountToken"
-        }
         $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
         # test response
         $passed = $Checks.StatusCode
@@ -83,24 +94,22 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
         # $propertyBag.AddValue('ScriptResult',"GOOD")
         $scriptOutput += "Connection to API a success`n"
         $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
-
-    }#try
+    }
 
     catch {
         if ($attempt -ge $maxattempts) {
             $scriptOutput += "Connection to API $ChecksURI FAILED`n"
             $scriptOutput += "ScriptResult: BAD`n"
             $scriptOutput += "Error: $_`n"
-            Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
-            exit
 
-                
-                        
-        }#if
-    }#catch
-}#while
+            Write-ErrorEvent -EventID 9201 -Message "FAILED discovery connection to API`nUrl: $ChecksURI`n $Checks`n Token: $ServiceAccountToken`n"
+            exit             
+        }
+    }
+}
 
-$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
+## Why is this called twice, is it only available in the try catch block?
+$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET -Headers $WebRequestHeaders
 #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
    
 Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
