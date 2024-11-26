@@ -22,11 +22,12 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\Release\</OutputPath>
-    <DelaySigning>false</DelaySigning>
-    <Company>MyCompany</Company>
-    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <DelaySigning>False</DelaySigning>
+    <Company>Opslogix Open Source</Company>
+    <Copyright>Copyright (c) Opslogix Open Source. All rights reserved.</Copyright>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>C:\GIt\Grafana-Alertmanager-SCOM\Resources\GrafanaKey.snk</AssemblyOriginatorKeyFile>
+    <GenerateSealed>True</GenerateSealed>
   </PropertyGroup>
   <ItemGroup>
     <ManagementPackReference Include="Microsoft.SystemCenter.InstanceGroup.Library">
@@ -141,7 +142,6 @@
     <Folder Include="Monitoring\Discoverys" />
     <Folder Include="Monitoring\Monitoring" />
     <Folder Include="Monitoring\Monitoring\Monitors" />
-    <Folder Include="Resources" />
     <Folder Include="Presentation" />
     <Folder Include="Presentation\Folders" />
     <Folder Include="Presentation\Views" />
@@ -161,11 +161,6 @@
     <EmbeddedResource Include="Scripts\Instance.ActiveRules.ps1" />
     <EmbeddedResource Include="Scripts\Instance.AlertRules.Discovery.ps1" />
     <EmbeddedResource Include="Scripts\Instance.Endpoint.Availability.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\ChangeMe.snk">
-      <SubType>Content</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ManagementPack.mpx">
