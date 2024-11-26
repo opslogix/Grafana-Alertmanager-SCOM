@@ -1,4 +1,38 @@
-﻿#Define Parameters
+﻿<#
+.SYNOPSIS
+    This script discovers Grafana alert rules and integrates them with Operations Manager.
+
+.DESCRIPTION
+    The script connects to the Grafana API to retrieve alert rules and creates discovery data for Operations Manager.
+    It logs events and handles errors during the connection process.
+
+.PARAMETER SourceId
+    The source identifier for the discovery data.
+
+.PARAMETER ManagedEntityId
+    The managed entity identifier for the discovery data.
+
+.PARAMETER URL
+    The base URL of the Grafana instance.
+
+.PARAMETER QueryUser
+    The username for the Grafana API (not used in this script).
+
+.PARAMETER QueryPwd
+    The password or token for the Grafana API.
+
+.PARAMETER OrgId
+    The organization ID for the Grafana API.
+
+.EXAMPLE
+    .\Instance.AlertRules.Discovery.ps1 -SourceId "source-id" -ManagedEntityId "entity-id" -URL "http://grafana-instance" -QueryUser "user" -QueryPwd "password" -OrgId 1
+
+.NOTES
+    Version: 1.0.5
+    Author: Opslogix
+    This script is part of the Opslogix Grafana Alertmanager integration with SCOM.
+#>
+#Define Parameters
 Param(
     $SourceId,
     $ManagedEntityId,
@@ -110,10 +144,10 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
 }
 
 ## Why is this called twice, is it only available in the try catch block?
-$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET -Headers $WebRequestHeaders
+$Checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET -Headers $WebRequestHeaders
 #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
    
-Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
+Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
 
     [string]$Uid = ($check).Uid
     [string]$ruleGroup = ($check).ruleGroup
@@ -138,7 +172,7 @@ Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
    
 
     $DiscoveryData.AddInstance($Inst)
-    $scriptOutput += "Returning discoverydata: $DiscoveryData`n"
+    $scriptOutput += "Adding discovery data: $DiscoveryData`n"
     $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
 }
 
