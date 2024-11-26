@@ -3,7 +3,7 @@
   <Manifest>
     <Identity>
       <ID>Opslogix.Grafana.Labs.Grafana.Alertmanager</ID>
-      <Version>1.0.0.102</Version>
+      <Version>1.0.0.91</Version>
     </Identity>
     <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
     <References>
@@ -236,20 +236,19 @@
                 <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1</ScriptName>
                 <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
 param(
-$QueryUser,
-$QueryPwd,
-[string]$Uid,
-[string]$URL,
-[string]$rule
+    [string]$URL,
+    $QueryUser,
+    $QueryPwd,
+    [string]$rule,
+    [string]$Uid
 )
 
 ### Define Operations Manager objects ###
 $momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
 
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1"
-$version = "1.0.8"
+$version = "1.0.9"
 $scriptOutput = ""
-
 
 
 # Event log functions
@@ -272,20 +271,19 @@ function Exit-Script() {
 }
 
 $OrgId = 1
-$ServiceAccountToken="glsa_AFKINIsjRgAatkWOk5Pk0rezK0B3AJqw_2f574ae8"
+$ServiceAccountToken = "$QueryPwd"
 
-Write-InfoEvent -EventID 5470 -Message "QueryPwd"
-Write-InfoEvent -EventID 5470 -Message $QueryPwd
+ #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
 
 # Get the active alerts from Grafana Alertmanager API
 $WebRequestHeaders = @{
-    "Accept" = "application/json"
-    "Content-Type" = "application/json"
+    "Accept"           = "application/json"
+    "Content-Type"     = "application/json"
     "X-Grafana-Org-Id" = "$OrgId"
-    "Authorization" = "Bearer $ServiceAccountToken"
+    "Authorization"    = "Bearer $ServiceAccountToken"
 }
 
-$response = Invoke-RestMethod -Uri "$URL/api/Alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
 
 # Filter the response to match the specific rule (alertname)
@@ -300,7 +298,8 @@ if ($null -eq $filteredAlerts -or $filteredAlerts.Count -eq 0) {
     $propertyBag.AddValue('Result', "OK")
     $propertyBag.AddValue('AlertSummary', $alertSummary)
     $propertyBag
-} else {
+}
+else {
     # Build a summary of all active rules
     Write-InfoEvent -EventID 5470 -Message  "Alert Rule '$rule' is under state Firing:`n`n"
     $alertSummary = "Alert Rule '$rule' is under state Firing:`n`n"
@@ -752,9 +751,11 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
           <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
           <ScriptBody><![CDATA[#Define Parameters
 Param(
-$SourceId,
-$ManagedEntityId,
-[string]$URL
+    $SourceId,
+    $ManagedEntityId,
+    [string]$URL,
+    $QueryUser,
+    $QueryPwd
 )
 
 ### Define Operations Manager objects ###
@@ -764,12 +765,12 @@ $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityI
 
 #Define variables
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
-$version = "1.0.2"
+$version = "1.0.5"
 $scriptOutput = ""
 
 $OrgId = 1
-$ServiceAccountToken="glsa_9c12tirBqO8fFOjZYvX5lN21wepnqfpm_94adf701"
 
+$ServiceAccountToken = "$QueryPwd"
 # Gather the start time of the script
 $StartTime = Get-Date
 #Set variable to be used in logging events
@@ -778,33 +779,28 @@ $whoami = whoami
 
 $computerName = [System.Net.DNS]::GetHostByName('').HostName
 
-function Write-Event($EventID, $Severity, $Message)
-{
-            $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+function Write-Event($EventID, $Severity, $Message) {
+    $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
 }
 
-function Write-InfoEvent($EventID, $Message)
-{
-            Write-Event -EventID $EventID -Severity 0 -Message $Message
+function Write-InfoEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 0 -Message $Message
 }
-function Write-WarningEvent($EventID, $Message)
-{
-            Write-Event -EventID $EventID -Severity 2 -Message $Message
+function Write-WarningEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 2 -Message $Message
 }
-function Write-ErrorEvent($EventID, $Message)
-{
-            Write-Event -EventID $EventID -Severity 1 -Message $Message
+function Write-ErrorEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 1 -Message $Message
 }
 
-Write-InfoEvent -EventID 9200 -Message "Script Started."
 $scriptOutput += "Script running as $whoami.`n"
-$scriptOutput += "Param URL: $URL `n"
+$scriptOutput += "Param URL: $URL `n Using access token from Run As Account"
 
 ####Discovery Script#####
 
 $baseurl = $URL
 $resourceurl = "/api/v1/provisioning/alert-rules"
-$ChecksURI = $baseurl+ $resourceurl
+$ChecksURI = $baseurl + $resourceurl
 
 #Null the variables
 $Checks = $null
@@ -816,76 +812,76 @@ $maxattempts = 3
 
 #Connect to Web API in a while loop
 while ($passed -ne 200 -and $attempt -lt $maxattempts) {
-        $attempt += 1
-        $scriptOutput += "Number of Attempts: $attempt`n"
-        sleep 10
+    $attempt += 1
+    $scriptOutput += "Number of Attempts: $attempt`n"
+    sleep 10
 
-        try{
-            ## Try to connect to API
-            $scriptOutput += "Trying to connect to: $ChecksURI`n"
-			#Request data from WebAPI
+    try {
+        ## Try to connect to API
+        $scriptOutput += "Trying to connect to: $ChecksURI`n"
+        #Request data from WebAPI
 
-            $WebRequestHeaders = @{
-                "Accept" = "application/json"
-                "Content-Type" = "application/json"
-                "X-Grafana-Org-Id" = "1"
-                "Authorization" = "Bearer $ServiceAccountToken"
-            }
-            $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
-            # test response
-            $passed = $Checks.StatusCode
+        $WebRequestHeaders = @{
+            "Accept"           = "application/json"
+            "Content-Type"     = "application/json"
+            "X-Grafana-Org-Id" = "1"
+            "Authorization"    = "Bearer $ServiceAccountToken"
+        }
+        $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
+        # test response
+        $passed = $Checks.StatusCode
 
-            # $propertyBag.AddValue('ScriptResult',"GOOD")
-			$scriptOutput += "Connection to API a success`n"
-            $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
+        # $propertyBag.AddValue('ScriptResult',"GOOD")
+        $scriptOutput += "Connection to API a success`n"
+        $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
 
-        }#try
+    }#try
 
-        catch{
-            if ($attempt -ge $maxattempts){
-				$scriptOutput += "Connection to API $ChecksURI FAILED`n"
-				$scriptOutput += "ScriptResult: BAD`n"
-				$scriptOutput += "Error: $_`n"
-                Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
-                exit
+    catch {
+        if ($attempt -ge $maxattempts) {
+            $scriptOutput += "Connection to API $ChecksURI FAILED`n"
+            $scriptOutput += "ScriptResult: BAD`n"
+            $scriptOutput += "Error: $_`n"
+            Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
+            exit
 
                 
                         
-            }#if
-        }#catch
-    }#while
+        }#if
+    }#catch
+}#while
 
-    $checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
-    #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
+$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
+#$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
    
-	Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
+Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
 
-		[string]$Uid = ($check).Uid
-		[string]$ruleGroup = ($check).ruleGroup
-        [string]$title = ($check).title
-        [string]$condition = ($check).condition
-        [string]$isPaused = ($check).isPaused
-        [string]$labels = ($check).labels
+    [string]$Uid = ($check).Uid
+    [string]$ruleGroup = ($check).ruleGroup
+    [string]$title = ($check).title
+    [string]$condition = ($check).condition
+    [string]$isPaused = ($check).isPaused
+    [string]$labels = ($check).labels
 
 	
 
-		$scriptOutput += "RuleName: $title`n"
+    $scriptOutput += "RuleName: $title`n"
 
-		$Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
-		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
-		$Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
-        $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
-		$Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
+    $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
+    $Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
    
 
-		$DiscoveryData.AddInstance($Inst)
-		$scriptOutput += "Returning discoverydata: $DiscoveryData`n"
-        $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
-	}
+    $DiscoveryData.AddInstance($Inst)
+    $scriptOutput += "Returning discoverydata: $DiscoveryData`n"
+    $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
+}
 
 
 # Return Discovery Items
