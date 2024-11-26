@@ -69,9 +69,9 @@
     <Compile Include="Monitoring\Discoverys\Instance.ResourcePool.Discovery.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx">
+    <None Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.ActiveRules.Script.UnitMonitor.mpx">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.Availability.Script.UnitMonitor.mpx">
       <SubType>Code</SubType>
     </Compile>
@@ -161,7 +161,6 @@
     <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1" />
     <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1" />
     <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1" />
-    <EmbeddedResource Include="Scripts\Grafana.Instance.ActiveRules_BACK.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\ChangeMe.snk">

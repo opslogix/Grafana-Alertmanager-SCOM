@@ -5,7 +5,7 @@ param(
     $QueryPwd,
     [string]$rule,
     [string]$Uid,
-    $OrgId
+    [int]$OrgId
 )
 
 ### Define Operations Manager objects ###

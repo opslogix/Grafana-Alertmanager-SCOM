@@ -8,6 +8,7 @@
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
           <xsd:element name="rule" type="xsd:string" minOccurs="1"/>
           <xsd:element name="Uid" type="xsd:string" minOccurs="1"/>
+          <!--<xsd:element name="OrgId" type="xsd:integer" minOccurs="1"/>-->
         </Configuration>
         <ModuleImplementation Isolation="Any">
           <Composite>
@@ -36,6 +37,10 @@
                     <Name>Uid</Name>
                     <Value>$Config/Uid$</Value>
                   </Parameter>
+                  <!--<Parameter>-->
+                  <!--<Name>OrgId</Name>-->
+                  <!--<Value>$Config/OrgId$</Value>-->
+                 <!--</Parameter>-->           
                 </Parameters>
                 <TimeoutSeconds>30</TimeoutSeconds>
               </ProbeAction>
