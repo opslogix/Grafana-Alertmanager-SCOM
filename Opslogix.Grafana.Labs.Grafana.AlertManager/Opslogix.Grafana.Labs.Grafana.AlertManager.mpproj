@@ -26,7 +26,7 @@
     <Company>Opslogix Open Source</Company>
     <Copyright>Copyright (c) Opslogix Open Source. All rights reserved.</Copyright>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>C:\GIt\Grafana-Alertmanager-SCOM\Resources\GrafanaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Resources\GrafanaKey.snk</AssemblyOriginatorKeyFile>
     <GenerateSealed>True</GenerateSealed>
   </PropertyGroup>
   <ItemGroup>
@@ -166,6 +166,14 @@
     <Compile Include="ManagementPack.mpx">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Opslogix.Grafana.Labs.Presentation\Opslogix.Grafana.Labs.Presentation.mpproj">
+      <Name>Opslogix.Grafana.Labs.Presentation</Name>
+      <Project>{1090b201-2201-4ab9-b65f-51b06049b336}</Project>
+      <Private>True</Private>
+      <Alias>OGLP</Alias>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
