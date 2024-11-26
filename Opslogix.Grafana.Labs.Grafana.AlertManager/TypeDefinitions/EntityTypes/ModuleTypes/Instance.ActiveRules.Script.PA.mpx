@@ -14,8 +14,8 @@
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1</ScriptName>
-                <ScriptBody>$IncludeFileContent/Scripts/Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1$</ScriptBody>
+                <ScriptName>Instance.ActiveRules.ps1</ScriptName>
+                <ScriptBody>$IncludeFileContent/Scripts/Instance.ActiveRules.ps1$</ScriptBody>
                 <Parameters>
                   <Parameter>
                     <Name>URL</Name>
