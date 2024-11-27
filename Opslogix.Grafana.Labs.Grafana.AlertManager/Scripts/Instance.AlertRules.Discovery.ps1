@@ -52,7 +52,7 @@ $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Di
 $version = "1.0.5"
 $scriptOutput = ""
 
-#$OrgId = 1
+$OrgId = $OrgId.ToString()
 
 $ServiceAccountToken = "$QueryPwd"
 # Gather the start time of the script
@@ -141,12 +141,7 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
             exit             
         }
     }
-}
-
-## Why is this called twice, is it only available in the try catch block?
-$Checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET -Headers $WebRequestHeaders
-#$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
-   
+}   
 Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
 
     [string]$Uid = ($check).Uid

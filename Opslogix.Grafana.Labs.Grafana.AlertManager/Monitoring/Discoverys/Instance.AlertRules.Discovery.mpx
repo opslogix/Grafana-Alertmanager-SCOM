@@ -7,7 +7,7 @@
           <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" />
         </DiscoveryTypes>
         <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
-          <IntervalSeconds>60</IntervalSeconds>
+          <IntervalSeconds>14400</IntervalSeconds>
           <SyncTime />
           <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
           <ScriptBody>$IncludeFileContent/Scripts/Instance.AlertRules.Discovery.ps1$</ScriptBody>

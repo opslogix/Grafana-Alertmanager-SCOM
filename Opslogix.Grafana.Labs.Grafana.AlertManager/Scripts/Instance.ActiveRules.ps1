@@ -81,7 +81,7 @@ function Write-ErrorEvent($EventID, $Message) {
 }
 
 
-#$OrgId = 1
+$OrgId = $OrgId.ToString()
 $ServiceAccountToken = "$QueryPwd"
 
 #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
