@@ -98,6 +98,8 @@ $passed = $false
 $attempt = 0
 $maxattempts = 3
 
+
+
 # Write Error event if $ServiceAccountToken is empty
 if ($null -eq $ServiceAccountToken) {
     Write-ErrorEvent -EventID 9201 -Message "No Service Account Token found in Run As Account and passed in the script as a parameter. Exiting script."
