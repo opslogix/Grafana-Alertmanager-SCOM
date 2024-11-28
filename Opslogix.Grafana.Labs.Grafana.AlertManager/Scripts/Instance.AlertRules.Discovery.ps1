@@ -39,7 +39,7 @@ Param(
     [string]$URL,
     $QueryUser,
     $QueryPwd,
-    $OrgId
+    [int]$OrgId
 )
 
 ### Define Operations Manager objects ###
@@ -131,6 +131,47 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
         # $propertyBag.AddValue('ScriptResult',"GOOD")
         $scriptOutput += "Connection to API a success`n"
         $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
+    
+        Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
+
+            [string]$Uid = ($check).Uid
+            [string]$ruleGroup = ($check).ruleGroup
+            [string]$title = ($check).title
+            [string]$condition = ($check).condition
+            [string]$isPaused = ($check).isPaused
+            [string]$labels = ($check).labels
+
+	
+
+            $scriptOutput += "RuleName: $title`n"
+
+            $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
+            $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
+            $Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
+   
+
+            $DiscoveryData.AddInstance($Inst)
+            $scriptOutput += "Adding discovery data: $DiscoveryData`n"
+            $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
+        }
+
+
+        # Return Discovery Items
+        $DiscoveryData
+
+        #Log an event for script ending and total execution time.
+        $EndTime = Get-Date
+        $ScriptTime = ($EndTime - $StartTime).TotalSeconds
+        $scriptOutput += "Script took: $ScriptTime seconds`n"
+
+
+        Write-InfoEvent -EventID 9250 -Message $scriptOutput
     }
 
     catch {
@@ -143,44 +184,4 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
             exit             
         }
     }
-}   
-Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
-
-    [string]$Uid = ($check).Uid
-    [string]$ruleGroup = ($check).ruleGroup
-    [string]$title = ($check).title
-    [string]$condition = ($check).condition
-    [string]$isPaused = ($check).isPaused
-    [string]$labels = ($check).labels
-
-	
-
-    $scriptOutput += "RuleName: $title`n"
-
-    $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
-    $Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
-   
-
-    $DiscoveryData.AddInstance($Inst)
-    $scriptOutput += "Adding discovery data: $DiscoveryData`n"
-    $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
 }
-
-
-# Return Discovery Items
-$DiscoveryData
-
-#Log an event for script ending and total execution time.
-$EndTime = Get-Date
-$ScriptTime = ($EndTime - $StartTime).TotalSeconds
-$scriptOutput += "Script took: $ScriptTime seconds`n"
-
-
-Write-InfoEvent -EventID 9250 -Message $scriptOutput
