@@ -14,10 +14,10 @@ $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityI
 
 #Define variables
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
-$version = "1.0.10"
+$version = "1.0.12"
 $scriptOutput = ""
 
-$OrgId = 1
+$OrgId = $OrgId.ToString()
 
 $ServiceAccountToken = "$QueryPwd"
 # Gather the start time of the script
@@ -26,7 +26,7 @@ $StartTime = Get-Date
 $whoami = whoami
 
 
-$computerName = [System.Net.DNS]::GetHostByName('').HostName
+#$computerName = [System.Net.DNS]::GetHostByName('').HostName
 
 function Write-Event($EventID, $Severity, $Message) {
     $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
@@ -63,7 +63,7 @@ $maxattempts = 3
 while ($passed -ne 200 -and $attempt -lt $maxattempts) {
     $attempt += 1
     $scriptOutput += "Number of Attempts: $attempt`n"
-    sleep 10
+    start-sleep 10
 
     try {
         ## Try to connect to API
@@ -73,7 +73,7 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
         $WebRequestHeaders = @{
             "Accept"           = "application/json"
             "Content-Type"     = "application/json"
-            "X-Grafana-Org-Id" = "1"
+            "X-Grafana-Org-Id" = "$OrgId"
             "Authorization"    = "Bearer $ServiceAccountToken"
         }
         $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
@@ -101,10 +101,10 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
     }#catch
 }#while
 
-$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
+#$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
 #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
    
-Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
+Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
 
     [string]$Uid = ($check).Uid
     [string]$ruleGroup = ($check).ruleGroup
