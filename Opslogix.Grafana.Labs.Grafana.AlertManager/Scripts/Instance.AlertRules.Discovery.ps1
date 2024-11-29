@@ -1,45 +1,10 @@
-﻿<#
-.SYNOPSIS
-    This script discovers Grafana alert rules and integrates them with Operations Manager.
-
-.DESCRIPTION
-    The script connects to the Grafana API to retrieve alert rules and creates discovery data for Operations Manager.
-    It logs events and handles errors during the connection process.
-
-.PARAMETER SourceId
-    The source identifier for the discovery data.
-
-.PARAMETER ManagedEntityId
-    The managed entity identifier for the discovery data.
-
-.PARAMETER URL
-    The base URL of the Grafana instance.
-
-.PARAMETER QueryUser
-    The username for the Grafana API (not used in this script).
-
-.PARAMETER QueryPwd
-    The password or token for the Grafana API.
-
-.PARAMETER OrgId
-    The organization ID for the Grafana API.
-
-.EXAMPLE
-    .\Instance.AlertRules.Discovery.ps1 -SourceId "source-id" -ManagedEntityId "entity-id" -URL "http://grafana-instance" -QueryUser "user" -QueryPwd "password" -OrgId 1
-
-.NOTES
-    Version: 1.0.5
-    Author: Opslogix
-    This script is part of the Opslogix Grafana Alertmanager integration with SCOM.
-#>
-#Define Parameters
-Param(
+﻿Param(
     $SourceId,
     $ManagedEntityId,
     [string]$URL,
+    $OrgId,
     $QueryUser,
-    $QueryPwd,
-    $OrgId
+    $QueryPwd
 )
 
 ### Define Operations Manager objects ###
@@ -49,10 +14,10 @@ $DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityI
 
 #Define variables
 $scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
-$version = "1.0.5"
+$version = "1.0.10"
 $scriptOutput = ""
 
-#$OrgId = 1
+$OrgId = 1
 
 $ServiceAccountToken = "$QueryPwd"
 # Gather the start time of the script
@@ -83,11 +48,7 @@ $scriptOutput += "Param URL: $URL `n Using access token from Run As Account"
 ####Discovery Script#####
 
 $baseurl = $URL
-
-#### Todo, change to input parameter #
-<#https://github.com/opslogix/Grafana-Alertmanager-SCOM/issues/14#>
 $resourceurl = "/api/v1/provisioning/alert-rules"
-
 $ChecksURI = $baseurl + $resourceurl
 
 #Null the variables
@@ -98,30 +59,23 @@ $passed = $false
 $attempt = 0
 $maxattempts = 3
 
-# Write Error event if $ServiceAccountToken is empty
-if ($null -eq $ServiceAccountToken) {
-    Write-ErrorEvent -EventID 9201 -Message "No Service Account Token found in Run As Account and passed in the script as a parameter. Exiting script."
-    exit
-}
-
-# Web Request Headers with Bearer Token
-$WebRequestHeaders = @{
-    "Accept"           = "application/json"
-    "Content-Type"     = "application/json"
-    "X-Grafana-Org-Id" = "$OrgId"
-    "Authorization"    = "Bearer $ServiceAccountToken"
-}
-
 #Connect to Web API in a while loop
 while ($passed -ne 200 -and $attempt -lt $maxattempts) {
     $attempt += 1
     $scriptOutput += "Number of Attempts: $attempt`n"
-    Start-Sleep 10
+    sleep 10
 
     try {
         ## Try to connect to API
-        $scriptOutput += "Trying to connect to: $ChecksURI`n using token: $ServiceAccountToken`n"
+        $scriptOutput += "Trying to connect to: $ChecksURI`n"
         #Request data from WebAPI
+
+        $WebRequestHeaders = @{
+            "Accept"           = "application/json"
+            "Content-Type"     = "application/json"
+            "X-Grafana-Org-Id" = "1"
+            "Authorization"    = "Bearer $ServiceAccountToken"
+        }
         $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
         # test response
         $passed = $Checks.StatusCode
@@ -129,25 +83,28 @@ while ($passed -ne 200 -and $attempt -lt $maxattempts) {
         # $propertyBag.AddValue('ScriptResult',"GOOD")
         $scriptOutput += "Connection to API a success`n"
         $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
-    }
+
+    }#try
 
     catch {
         if ($attempt -ge $maxattempts) {
             $scriptOutput += "Connection to API $ChecksURI FAILED`n"
             $scriptOutput += "ScriptResult: BAD`n"
             $scriptOutput += "Error: $_`n"
+            Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
+            Write-ErrorEvent -EventID 9201 -Message "$scriptOutput"
+            exit
 
-            Write-ErrorEvent -EventID 9201 -Message "FAILED discovery connection to API`nUrl: $ChecksURI`n $Checks`n Token: $ServiceAccountToken`n"
-            exit             
-        }
-    }
-}
+                
+                        
+        }#if
+    }#catch
+}#while
 
-## Why is this called twice, is it only available in the try catch block?
-$Checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET -Headers $WebRequestHeaders
+$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
 #$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
    
-Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
+Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
 
     [string]$Uid = ($check).Uid
     [string]$ruleGroup = ($check).ruleGroup
@@ -162,6 +119,7 @@ Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
 
     $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
     $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/OrgId$", $OrgId)
     $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
     $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
     $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
@@ -169,10 +127,11 @@ Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
     $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
     $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
     $Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
+    # Add Path property as url/org. Retrieve the org name from the Alertmanager instance
    
 
     $DiscoveryData.AddInstance($Inst)
-    $scriptOutput += "Adding discovery data: $DiscoveryData`n"
+    $scriptOutput += "Returning discoverydata: $DiscoveryData`n"
     $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
 }
 

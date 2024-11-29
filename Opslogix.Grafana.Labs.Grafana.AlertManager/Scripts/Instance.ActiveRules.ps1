@@ -1,55 +1,4 @@
-﻿<#
-.SYNOPSIS
-    This script retrieves active alerts from Grafana Alertmanager API and filters them based on a specific rule.
-
-.DESCRIPTION
-    The script connects to the Grafana Alertmanager API using provided credentials and retrieves active alerts.
-    It then filters the alerts based on a specific rule UID and generates a summary of the active alerts.
-    The summary is returned as a property bag to be used in Operations Manager (SCOM).
-
-.PARAMETER URL
-    The base URL of the Grafana instance.
-
-.PARAMETER QueryUser
-    The username for authentication (not used in the script).
-
-.PARAMETER QueryPwd
-    The password or token for authentication.
-
-.PARAMETER rule
-    The name of the alert rule to filter.
-
-.PARAMETER Uid
-    The unique identifier of the alert rule to filter.
-
-.PARAMETER OrgId
-    The organization ID in Grafana.
-
-.FUNCTIONS
-    Write-Event
-        Logs an event to the Operations Manager event log.
-
-    Write-InfoEvent
-        Logs an informational event to the Operations Manager event log.
-
-    Write-WarningEvent
-        Logs a warning event to the Operations Manager event log.
-
-    Write-ErrorEvent
-        Logs an error event to the Operations Manager event log.
-
-.NOTES
-    Version: 1.0.9
-    Author: Opslogix
-
-.EXAMPLE
-    .\Instance.ActiveRules.ps1 -URL "http://grafana.example.com" -QueryPwd "your_token" -rule "HighCPUUsage" -Uid "rule-uid" -OrgId 1
-
-    This example retrieves active alerts from the Grafana instance at "http://grafana.example.com" using the provided token,
-    filters the alerts based on the rule UID "rule-uid", and returns a summary of the active alerts.
-#>
-#Insert parameters if necessary, otherwise remove this
-param(
+﻿param(
     [string]$URL,
     $QueryUser,
     $QueryPwd,
@@ -81,7 +30,7 @@ function Write-ErrorEvent($EventID, $Message) {
 }
 
 
-#$OrgId = 1
+$OrgId = $OrgId.ToString()
 $ServiceAccountToken = "$QueryPwd"
 
 #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
