@@ -17,7 +17,7 @@
     <Company>Opslogix B.V</Company>
     <Copyright>Copyright (c) Opslogix B.V. All rights reserved.</Copyright>
     <DelaySigning>False</DelaySigning>
-    <AssemblyOriginatorKeyFile>C:\Git\Opslogix.Grafana.Labs.Grafana.AlertManager\Resources\ChangeMe.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Resources\ChangeMe.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
@@ -42,6 +42,12 @@
     </ManagementPackReference>
     <ManagementPackReference Include="Microsoft.Windows.Library">
       <Alias>Windows</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Opslogix.Grafana.Labs.Presentation">
+      <HintPath>Resources\Opslogix.Grafana.Labs.Presentation.mp</HintPath>
+      <Alias>OGLP</Alias>
+      <MinVersion>1.0.0.1</MinVersion>
       <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="System.Health.Library">
@@ -142,6 +148,7 @@
     <Folder Include="Monitoring\Discoverys" />
     <Folder Include="Monitoring\Monitoring" />
     <Folder Include="Monitoring\Monitoring\Monitors" />
+    <Folder Include="Resources" />
     <Folder Include="Presentation" />
     <Folder Include="Presentation\Folders" />
     <Folder Include="Presentation\Views" />
@@ -168,12 +175,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Opslogix.Grafana.Labs.Presentation\Opslogix.Grafana.Labs.Presentation.mpproj">
-      <Name>Opslogix.Grafana.Labs.Presentation</Name>
-      <Project>{1090b201-2201-4ab9-b65f-51b06049b336}</Project>
-      <Private>True</Private>
-      <Alias>OGLP</Alias>
-    </ProjectReference>
+    <Content Include="Opslogix.Grafana.Labs.Presentation.mp">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Resources\ChangeMe.snk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Resources\Opslogix.Grafana.Labs.Presentation.mp">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
