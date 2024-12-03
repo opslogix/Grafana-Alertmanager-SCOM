@@ -8,7 +8,7 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder">
-          <Name>Grafana Labs</Name>
+          <Name>Grafana Alertmanager</Name>
           <Description>Grafana Labs Grafana Alertmanager Root Folder</Description>
         </DisplayString>
       </DisplayStrings>
