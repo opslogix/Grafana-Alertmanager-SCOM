@@ -20,7 +20,7 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.State.View">
-          <Name>Endpoint State</Name>
+          <Name>Alertmanager Instances</Name>
           <Description>State of all Grafana Endpoint instances</Description>
         </DisplayString>
       </DisplayStrings>
