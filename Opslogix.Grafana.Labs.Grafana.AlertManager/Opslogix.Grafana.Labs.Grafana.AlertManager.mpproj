@@ -45,9 +45,9 @@
       <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="Opslogix.Grafana.Labs.Presentation">
-      <HintPath>Resources\Opslogix.Grafana.Labs.Presentation.mp</HintPath>
+      <HintPath>C:\GIt\Grafana-Alertmanager-SCOM\Opslogix.Grafana.Labs.Grafana.AlertManager\Resources\Opslogix.Grafana.Labs.Presentation.mp</HintPath>
       <Alias>OGLP</Alias>
-      <MinVersion>1.0.0.1</MinVersion>
+      <MinVersion>1.0.0.0</MinVersion>
       <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="System.Health.Library">
@@ -179,9 +179,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Resources\ChangeMe.snk">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Resources\Opslogix.Grafana.Labs.Presentation.mp">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
