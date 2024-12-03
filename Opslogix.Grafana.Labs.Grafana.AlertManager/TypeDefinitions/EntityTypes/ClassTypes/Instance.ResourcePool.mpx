@@ -10,7 +10,7 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool">
-          <Name>Grafana Resource Pool</Name>
+          <Name>Grafana Alertmanager Resource Pool</Name>
         </DisplayString>
       </DisplayStrings>
     </LanguagePack>
