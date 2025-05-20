@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Manifest>
+    <Identity>
+      <ID>Opslogix.Grafana.Labs.Presentation</ID>
+      <Version>1.0.0.5</Version>
+    </Identity>
+    <Name>Opslogix Grafana Labs Presentation</Name>
+    <References>
+      <Reference Alias="SC">
+        <ID>Microsoft.SystemCenter.Library</ID>
+        <Version>7.0.8437.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="System">
+        <ID>System.Library</ID>
+        <Version>7.5.8501.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+  <Presentation>
+    <Folders>
+      <Folder ID="Opslogix.Grafana.Labs.Root.Folder" Accessibility="Public" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
+    </Folders>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Presentation">
+          <Name>Opslogix Grafana Labs Presentation</Name>
+          <Description>Management Pack that hold the top level root folder</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Root.Folder">
+          <Name>Grafana Labs</Name>
+          <Description>Grafana Labs Root Folder</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles></KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPack>

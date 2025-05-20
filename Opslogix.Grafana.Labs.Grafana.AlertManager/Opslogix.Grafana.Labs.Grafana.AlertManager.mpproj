@@ -13,20 +13,21 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <GenerateSealed>False</GenerateSealed>
+    <GenerateSealed>True</GenerateSealed>
     <Company>Opslogix B.V</Company>
     <Copyright>Copyright (c) Opslogix B.V. All rights reserved.</Copyright>
     <DelaySigning>False</DelaySigning>
-    <AssemblyOriginatorKeyFile>C:\Git\Opslogix.Grafana.Labs.Grafana.AlertManager\Resources\ChangeMe.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>C:\Data\Repos\SysCtr-Grafana-Alertmanager\Resources\GrafanaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\Release\</OutputPath>
-    <DelaySigning>false</DelaySigning>
-    <Company>MyCompany</Company>
-    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <DelaySigning>False</DelaySigning>
+    <Company>Opslogix Open Source</Company>
+    <Copyright>Copyright (c) Opslogix Open Source. All rights reserved.</Copyright>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>..\Resources\GrafanaKey.snk</AssemblyOriginatorKeyFile>
+    <GenerateSealed>True</GenerateSealed>
   </PropertyGroup>
   <ItemGroup>
     <ManagementPackReference Include="Microsoft.SystemCenter.InstanceGroup.Library">
@@ -60,6 +61,9 @@
     <Compile Include="Monitoring\Discoverys\Instance.AlertRules.Discovery.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Monitoring\Discoverys\Instance.Endpoint.OrgName.Discovery.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Monitoring\Discoverys\Instance.InstanceGroup.Discovery.mpx">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +77,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Monitoring\Monitoring\Monitors\Instance.Endpoint.Availability.Script.UnitMonitor.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Monitoring\Rules\Instance.Endpoint.APIFailedLogin.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Monitoring\Monitoring\Rules\Instance.Endpoint.CheckRunAsAccount.Rule.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\Folders\RootFolder.mpx">
@@ -108,7 +118,13 @@
     <Compile Include="TypeDefinitions\EntityTypes\ClassTypes\Instance.ResourcePool.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.ActiveRules.Script.DS.Filtered.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.ActiveRules.Script.PA.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.AlertRules.Discovery.DS.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.Availability.Script.PA.mpx">
@@ -121,6 +137,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.Availability.Script.DS.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.CheckRunAsAccount.Script.DS.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.CheckRunAsAccount.Script.PA.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.Endpoint.OrgName.Discovery.DS.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TypeDefinitions\EntityTypes\ModuleTypes\Instance.PropertyBagProvider.mpx">
@@ -141,6 +166,7 @@
     <Folder Include="Monitoring\Discoverys" />
     <Folder Include="Monitoring\Monitoring" />
     <Folder Include="Monitoring\Monitoring\Monitors" />
+    <Folder Include="Monitoring\Monitoring\Rules" />
     <Folder Include="Resources" />
     <Folder Include="Presentation" />
     <Folder Include="Presentation\Folders" />
@@ -158,20 +184,32 @@
     <EmbeddedResource Include="Scripts\Administration\Add-GrafanaAlertManagerInstance.ps1" />
     <EmbeddedResource Include="Scripts\Administration\Get-GrafanaAlertManagerInstanace.ps1" />
     <EmbeddedResource Include="Scripts\Administration\Remove-GrafanaAlertManagerInstance.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1" />
-    <EmbeddedResource Include="Scripts\Grafana.Instance.ActiveRules_BACK.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\ChangeMe.snk">
-      <SubType>Content</SubType>
-    </Content>
+    <EmbeddedResource Include="Scripts\CheckRunAsAccount.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.ActiveRules.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.AlertRules.Discovery.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.Endpoint.Availability.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.Endpoint.OrgName.Discovery.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ManagementPack.mpx">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Opslogix.Grafana.Labs.Presentation.mp">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Resources\ChangeMe.snk">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Opslogix.Grafana.Labs.Presentation\Opslogix.Grafana.Labs.Presentation.mpproj">
+      <Name>Opslogix.Grafana.Labs.Presentation</Name>
+      <Project>{1090b201-2201-4ab9-b65f-51b06049b336}</Project>
+      <Private>True</Private>
+      <Alias>OGLP</Alias>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>

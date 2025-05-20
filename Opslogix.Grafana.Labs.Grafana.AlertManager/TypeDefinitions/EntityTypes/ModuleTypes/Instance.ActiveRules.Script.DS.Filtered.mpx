@@ -1,0 +1,83 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<TypeDefinitions>
+		<ModuleTypes>
+			<DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS.Filtered" Accessibility="Internal" Batching="false">
+				<Configuration>
+					<xsd:element name="URL" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="QueryUser" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="Uid" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="OrgId" type="xsd:integer" minOccurs="1"/>
+					<xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1"/>
+					<xsd:element name="Start" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="End" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="DaysOfWeekMask" type="xsd:integer" minOccurs="1"/>
+					<xsd:element name="Debug" type="xsd:boolean" minOccurs="1"/>
+					<xsd:element name="SendSilencedAlerts" type="xsd:boolean" minOccurs="1"/>
+				</Configuration>
+				<OverrideableParameters>
+					<OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int"/>
+					<OverrideableParameter ID="Start" Selector="$Config/Start$" ParameterType="string" />
+					<OverrideableParameter ID="End" Selector="$Config/End$" ParameterType="string" />
+					<OverrideableParameter ID="DaysOfWeekMask" Selector="$Config/DaysOfWeekMask$" ParameterType="int" />
+					<OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool"/>
+					<OverrideableParameter ID="SendSilencedAlerts" Selector="$Config/SendSilencedAlerts$" ParameterType="bool"/>
+				</OverrideableParameters>
+				<ModuleImplementation Isolation="Any">
+					<Composite>
+						<MemberModules>
+							<DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS">
+								<URL>$Config/URL$</URL>
+								<QueryUser>$Config/QueryUser$</QueryUser>
+								<QueryPwd>$Config/QueryPwd$</QueryPwd>
+								<OrgId>$Config/OrgId$</OrgId>
+								<IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+								<Debug>$Config/Debug$</Debug>
+								<SendSilencedAlerts>$Config/SendSilencedAlerts$</SendSilencedAlerts>
+							</DataSource>
+							<ConditionDetection ID="Filter" TypeID="System!System.ExpressionFilter">
+								<Expression>
+									<SimpleExpression>
+										<ValueExpression>
+											<XPathQuery Type="String">Property[@Name="Uid"]</XPathQuery>
+										</ValueExpression>
+										<Operator>Equal</Operator>
+										<ValueExpression>
+											<Value Type="String">$Config/Uid$</Value>
+										</ValueExpression>
+									</SimpleExpression>
+								</Expression>
+							</ConditionDetection>
+							<ConditionDetection ID="Schedule" TypeID="System!System.SchedulerFilter">
+								<SchedulerFilter>
+									<ProcessDataMode>OnSchedule</ProcessDataMode>
+									<Schedule>
+										<WeeklySchedule>
+											<Windows>
+												<Daily>
+													<Start>$Config/Start$</Start>
+													<End>$Config/End$</End>
+													<DaysOfWeekMask>$Config/DaysOfWeekMask$</DaysOfWeekMask>
+												</Daily>
+											</Windows>
+										</WeeklySchedule>
+										<ExcludeDates />
+									</Schedule>
+									<UseCurrentTime>true</UseCurrentTime>
+								</SchedulerFilter>
+							</ConditionDetection>
+						</MemberModules>
+						<Composition>
+							<Node ID="Schedule">
+								<Node ID="Filter">
+									<Node ID="DS"></Node>
+								</Node>
+							</Node>
+						</Composition>
+					</Composite>
+				</ModuleImplementation>
+				<OutputType>System!System.PropertyBagData</OutputType>
+			</DataSourceModuleType>
+		</ModuleTypes>
+	</TypeDefinitions>
+</ManagementPackFragment>

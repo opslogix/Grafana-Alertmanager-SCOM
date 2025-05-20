@@ -1,53 +1,58 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <TypeDefinitions>
-    <ModuleTypes>
-      <ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
-        <Configuration>
-          <xsd:element name="URL" type="xsd:string" minOccurs="1"/>
-          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1"/>
-          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
-          <xsd:element name="rule" type="xsd:string" minOccurs="1"/>
-          <xsd:element name="Uid" type="xsd:string" minOccurs="1"/>
-        </Configuration>
-        <ModuleImplementation Isolation="Any">
-          <Composite>
-            <MemberModules>
-              <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
-                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1</ScriptName>
-                <ScriptBody>$IncludeFileContent/Scripts/Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1$</ScriptBody>
-                <Parameters>
-                  <Parameter>
-                    <Name>URL</Name>
-                    <Value>$Config/URL$</Value>
-                  </Parameter>
-                  <Parameter>
-                    <Name>QueryUser</Name>
-                    <Value>$Config/QueryUser$</Value>
-                  </Parameter>
-                  <Parameter>
-                    <Name>QueryPwd</Name>
-                    <Value>$Config/QueryPwd$</Value>
-                  </Parameter>
-                  <Parameter>
-                    <Name>rule</Name>
-                    <Value>$Config/rule$</Value>
-                  </Parameter>
-                  <Parameter>
-                    <Name>Uid</Name>
-                    <Value>$Config/Uid$</Value>
-                  </Parameter>
-                </Parameters>
-                <TimeoutSeconds>30</TimeoutSeconds>
-              </ProbeAction>
-            </MemberModules>
-            <Composition>
-              <Node ID="PS"></Node>
-            </Composition>
-          </Composite>
-        </ModuleImplementation>
-        <OutputType>System!System.PropertyBagData</OutputType>
-        <InputType>System!System.BaseData</InputType>
-      </ProbeActionModuleType>
-    </ModuleTypes>
-  </TypeDefinitions>
+	<TypeDefinitions>
+		<ModuleTypes>
+			<ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
+				<Configuration>
+					<xsd:element name="URL" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="QueryUser" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="OrgId" type="xsd:integer" minOccurs="1"/>
+					<xsd:element name="Debug" type="xsd:boolean" minOccurs="1"/>
+					<xsd:element name="SendSilencedAlerts" type="xsd:boolean" minOccurs="1"/>
+				</Configuration>
+				<ModuleImplementation Isolation="Any">
+					<Composite>
+						<MemberModules>
+							<ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
+								<ScriptName>Instance.ActiveRules.ps1</ScriptName>
+								<ScriptBody>$IncludeFileContent/Scripts/Instance.ActiveRules.ps1$</ScriptBody>
+								<Parameters>
+									<Parameter>
+										<Name>URL</Name>
+										<Value>$Config/URL$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>QueryUser</Name>
+										<Value>$Config/QueryUser$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>QueryPwd</Name>
+										<Value>$Config/QueryPwd$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>OrgId</Name>
+										<Value>$Config/OrgId$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>Debug</Name>
+										<Value>$Config/Debug$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>SendSilencedAlerts</Name>
+										<Value>$Config/SendSilencedAlerts$</Value>
+									</Parameter>
+								</Parameters>
+								<TimeoutSeconds>30</TimeoutSeconds>
+							</ProbeAction>
+						</MemberModules>
+						<Composition>
+							<Node ID="PS"></Node>
+						</Composition>
+					</Composite>
+				</ModuleImplementation>
+				<OutputType>System!System.PropertyBagData</OutputType>
+				<InputType>System!System.BaseData</InputType>
+			</ProbeActionModuleType>
+		</ModuleTypes>
+	</TypeDefinitions>
 </ManagementPackFragment>

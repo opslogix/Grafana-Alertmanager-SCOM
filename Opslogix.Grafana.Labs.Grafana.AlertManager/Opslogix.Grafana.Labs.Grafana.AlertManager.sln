@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D4B43EB3-688B-4EEE-86BD-088F0B28ABB3}") = "Opslogix.Grafana.Labs.Grafana.Alertmanager", "Opslogix.Grafana.Labs.Grafana.Alertmanager.mpproj", "{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}"
 EndProject
+Project("{D4B43EB3-688B-4EEE-86BD-088F0B28ABB3}") = "Opslogix.Grafana.Labs.Presentation", "..\Opslogix.Grafana.Labs.Presentation\Opslogix.Grafana.Labs.Presentation.mpproj", "{1090B201-2201-4AB9-B65F-51B06049B336}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -15,6 +17,10 @@ Global
 		{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}.Debug|x86.Build.0 = Debug|x86
 		{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}.Release|x86.ActiveCfg = Release|x86
 		{860EF8D6-92DC-4FFB-AD29-CFCAFC05D1AD}.Release|x86.Build.0 = Release|x86
+		{1090B201-2201-4AB9-B65F-51B06049B336}.Debug|x86.ActiveCfg = Debug|x86
+		{1090B201-2201-4AB9-B65F-51B06049B336}.Debug|x86.Build.0 = Debug|x86
+		{1090B201-2201-4AB9-B65F-51B06049B336}.Release|x86.ActiveCfg = Release|x86
+		{1090B201-2201-4AB9-B65F-51B06049B336}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
