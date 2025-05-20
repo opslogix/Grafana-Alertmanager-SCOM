@@ -3,7 +3,7 @@
   <Manifest>
     <Identity>
       <ID>Opslogix.Grafana.Labs.Presentation</ID>
-      <Version>1.0.0.2</Version>
+      <Version>1.0.0.8</Version>
     </Identity>
     <Name>Opslogix Grafana Labs Presentation</Name>
     <References>
