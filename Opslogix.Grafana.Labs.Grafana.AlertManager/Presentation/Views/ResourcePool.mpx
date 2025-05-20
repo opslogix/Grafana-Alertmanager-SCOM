@@ -37,8 +37,8 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.State.View">
-          <Name>Resource Pool State</Name>
-          <Description>Current state of the Resource Pool</Description>
+          <Name>Alertmanager Resource Pool</Name>
+          <Description>Current state of the Grafana Alertmanager Resource Pool</Description>
         </DisplayString>
       </DisplayStrings>
     </LanguagePack>

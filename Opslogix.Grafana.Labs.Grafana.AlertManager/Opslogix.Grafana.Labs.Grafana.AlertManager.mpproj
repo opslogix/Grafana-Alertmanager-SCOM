@@ -17,16 +17,17 @@
     <Company>Opslogix B.V</Company>
     <Copyright>Copyright (c) Opslogix B.V. All rights reserved.</Copyright>
     <DelaySigning>False</DelaySigning>
-    <AssemblyOriginatorKeyFile>C:\Git\Opslogix.Grafana.Labs.Grafana.AlertManager\Resources\ChangeMe.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Resources\ChangeMe.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\Release\</OutputPath>
-    <DelaySigning>false</DelaySigning>
-    <Company>MyCompany</Company>
-    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <DelaySigning>False</DelaySigning>
+    <Company>Opslogix Open Source</Company>
+    <Copyright>Copyright (c) Opslogix Open Source. All rights reserved.</Copyright>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>..\Resources\GrafanaKey.snk</AssemblyOriginatorKeyFile>
+    <GenerateSealed>True</GenerateSealed>
   </PropertyGroup>
   <ItemGroup>
     <ManagementPackReference Include="Microsoft.SystemCenter.InstanceGroup.Library">
@@ -41,6 +42,12 @@
     </ManagementPackReference>
     <ManagementPackReference Include="Microsoft.Windows.Library">
       <Alias>Windows</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Opslogix.Grafana.Labs.Presentation">
+      <HintPath>C:\GIt\Grafana-Alertmanager-SCOM\Opslogix.Grafana.Labs.Grafana.AlertManager\Resources\Opslogix.Grafana.Labs.Presentation.mp</HintPath>
+      <Alias>OGLP</Alias>
+      <MinVersion>1.0.0.0</MinVersion>
       <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="System.Health.Library">
@@ -158,20 +165,22 @@
     <EmbeddedResource Include="Scripts\Administration\Add-GrafanaAlertManagerInstance.ps1" />
     <EmbeddedResource Include="Scripts\Administration\Get-GrafanaAlertManagerInstanace.ps1" />
     <EmbeddedResource Include="Scripts\Administration\Remove-GrafanaAlertManagerInstance.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.ActiveRules.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.AlertRules.Discovery.ps1" />
-    <EmbeddedResource Include="Scripts\Opslogix.Grafana.Labs.Grafana.AlertManager.Instance.Endpoint.Availability.ps1" />
-    <EmbeddedResource Include="Scripts\Grafana.Instance.ActiveRules_BACK.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\ChangeMe.snk">
-      <SubType>Content</SubType>
-    </Content>
+    <EmbeddedResource Include="Scripts\Instance.ActiveRules.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.AlertRules.Discovery.ps1" />
+    <EmbeddedResource Include="Scripts\Instance.Endpoint.Availability.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ManagementPack.mpx">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Opslogix.Grafana.Labs.Presentation.mp">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Resources\ChangeMe.snk">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
