@@ -105,7 +105,7 @@ Once installed and configured:
 
 **Issue:** Alerts are not appearing in SCOM.
 
-- Verify the API token has correct permissions (`Admin` or `Editor` access may be required).
+- Verify the API token has correct permissions (`Viewer` is be required) for each organization.
 - Check event logs in SCOM for connection errors.
 - Ensure the discovery rule is enabled.
 
@@ -114,8 +114,92 @@ Once installed and configured:
 - Ensure the correct Grafana API URL is configured (e.g., `https://grafana.example.com/api/v1/alerts`).
 - Test API connectivity using `curl` or Postman.
 
-## Future Enhancements
+# Administration Guide: OpsLogix SCOM Management Pack for Grafana Alertmanager
 
-- Support for additional Grafana alert types.
-- More granular alert filtering options.
-- Enhanced logging and diagnostics.
+Use the following PowerShell snippets to **add**, **get**, and **remove** Grafana Alertmanager instances in SCOM. Execute these from a machine with the SCOM PowerShell module and network access to your SCOM management server. Replace the `<…>` placeholders with your actual values.
+
+---
+
+## 1. Add a Grafana Alertmanager Instance
+
+```powershell
+# Parameters
+$ClassName               = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"
+$GrafanaDisplayName      = "<Friendly Name, e.g. 'Grafana Europe/OrgId 1'>"
+$GrafanaEndpointURL      = "https://<IP_or_FQDN>:<Port>"
+$GrafanaEndpointOrgId    = 1
+
+# Connect to SCOM
+New-SCOMManagementGroupConnection -ComputerName "localhost"
+$MG = Get-SCOMManagementGroup
+
+# Prepare new class instance
+$Class         = Get-SCOMClass -Name $ClassName
+$ClassInstance = New-Object Microsoft.EnterpriseManagement.Common.CreatableEnterpriseManagementObject($MG, $Class)
+$ClassInstance.Id = [Guid]::NewGuid()
+$ClassInstance[$Class, "DisplayName"].Value = $GrafanaDisplayName
+$ClassInstance[$Class, "URL"].Value         = $GrafanaEndpointURL
+$ClassInstance[$Class, "OrgId"].Value       = $GrafanaEndpointOrgId
+
+# Commit discovery
+$discovery = New-Object Microsoft.EnterpriseManagement.ConnectorFramework.IncrementalDiscoveryData
+$discovery.Add($ClassInstance)
+$discovery.Commit($MG)
+
+Write-Host "Grafana Alertmanager instance '$GrafanaDisplayName' added."
+```
+
+---
+
+## 2. Get a Grafana Alertmanager Instance
+
+```powershell
+# Parameters
+$ClassName          = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"
+$GrafanaDisplayName = "<DisplayName of Grafana Instance>"
+
+# Connect to SCOM
+New-SCOMManagementGroupConnection -ComputerName "localhost"
+$MG = Get-SCOMManagementGroup
+
+# Retrieve instance
+$Class    = Get-SCOMClass -Name $ClassName
+$Instance = Get-SCOMClassInstance -Class $Class |
+            Where-Object { $_.DisplayName -eq $GrafanaDisplayName }
+
+if ($Instance) {
+    Write-Host "Found instance:" $Instance.DisplayName
+    $Instance
+} else {
+    Write-Host "Instance '$GrafanaDisplayName' not found."
+}
+```
+
+---
+
+## 3. Remove a Grafana Alertmanager Instance
+
+```powershell
+# Parameters
+$ClassName          = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"
+$GrafanaDisplayName = "<DisplayName of Grafana Instance to remove>"
+
+# Connect to SCOM
+New-SCOMManagementGroupConnection -ComputerName "localhost"
+$MG = Get-SCOMManagementGroup
+
+# Find instance
+$Class    = Get-SCOMClass -Name $ClassName
+$Instance = Get-SCOMClassInstance -Class $Class |
+            Where-Object { $_.DisplayName -eq $GrafanaDisplayName }
+
+if ($Instance) {
+    # Mark for removal
+    $discovery = New-Object Microsoft.EnterpriseManagement.ConnectorFramework.IncrementalDiscoveryData
+    $discovery.Remove($Instance)
+    $discovery.Commit($MG)
+    Write-Host "Grafana instance '$GrafanaDisplayName' removed successfully."
+} else {
+    Write-Host "Instance '$GrafanaDisplayName' not found."
+}
+```
