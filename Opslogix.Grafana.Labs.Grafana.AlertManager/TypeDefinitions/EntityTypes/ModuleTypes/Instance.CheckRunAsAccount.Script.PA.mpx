@@ -1,0 +1,43 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<TypeDefinitions>
+		<ModuleTypes>
+			<ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
+				<Configuration>
+					<xsd:element name="QueryUser" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="QueryPwd" type="xsd:string" minOccurs="1"/>
+					<xsd:element name="Debug" type="xsd:boolean" minOccurs="1"/>
+				</Configuration>
+				<ModuleImplementation Isolation="Any">
+					<Composite>
+						<MemberModules>
+							<ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
+								<ScriptName>CheckRunAsAccount.ps1.ps1</ScriptName>
+								<ScriptBody>$IncludeFileContent/Scripts/CheckRunAsAccount.ps1$</ScriptBody>
+								<Parameters>
+									<Parameter>
+										<Name>QueryUser</Name>
+										<Value>$Config/QueryUser$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>QueryPwd</Name>
+										<Value>$Config/QueryPwd$</Value>
+									</Parameter>
+									<Parameter>
+										<Name>Debug</Name>
+										<Value>$Config/Debug$</Value>
+									</Parameter>
+								</Parameters>
+								<TimeoutSeconds>30</TimeoutSeconds>
+							</ProbeAction>
+						</MemberModules>
+						<Composition>
+							<Node ID="PS"></Node>
+						</Composition>
+					</Composite>
+				</ModuleImplementation>
+				<OutputType>System!System.PropertyBagData</OutputType>
+				<InputType>System!System.BaseData</InputType>
+			</ProbeActionModuleType>
+		</ModuleTypes>
+	</TypeDefinitions>
+</ManagementPackFragment>

@@ -1,32 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
 
-Opslogix.Grafana.Labs.Grafana.AlertManager/Resources/ChangeMe.snk
+/.vs
 /Opslogix.Grafana.Labs.Grafana.AlertManager/.vs/Opslogix.Grafana.Labs.Grafana.AlertManager/FileContentIndex
-/Opslogix.Grafana.Labs.Grafana.AlertManager/.vs/Opslogix.Grafana.Labs.Grafana.AlertManager/FileContentIndex## Ignore Visual Studio temporary files, build results, and
-
-
-# User-specific files
-*.rsuser
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-
-# Mono auto generated files
-mono_crash.*
-
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+/Opslogix.Grafana.Labs.Grafana.AlertManager/.vs/Opslogix.Grafana.Labs.Grafana.AlertManager/v17/ResourceExplorer
+/Opslogix.Grafana.Labs.Grafana.AlertManager/bin/Release
+/Opslogix.Grafana.Labs.Grafana.AlertManager/obj/Debug/Opslogix.Grafana.Labs.Grafana.AlertManager.mpproj.AssemblyReference.cache
+/Opslogix.Grafana.Labs.Grafana.AlertManager/.vs/Opslogix.Grafana.Labs.Grafana.AlertManager/v17/.suo
+/Opslogix.Grafana.Labs.Grafana.AlertManager/.vs/Opslogix.Grafana.Labs.Grafana.AlertManager/v17/DocumentLayout.backup.json
+/Opslogix.Grafana.Labs.Grafana.AlertManager/.vs/Opslogix.Grafana.Labs.Grafana.AlertManager/v17/DocumentLayout.json
+/Opslogix.Grafana.Labs.Grafana.AlertManager/obj/Release/Opslogix.Grafana.Labs.Grafana.Alertmanager.mp
+/Opslogix.Grafana.Labs.Grafana.AlertManager/obj/Release/Opslogix.Grafana.Labs.Grafana.Alertmanager.xml

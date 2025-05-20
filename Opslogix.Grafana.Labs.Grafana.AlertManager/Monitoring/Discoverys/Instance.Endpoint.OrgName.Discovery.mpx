@@ -1,0 +1,30 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Monitoring>
+		<Discoveries>
+			<Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+				<Category>Discovery</Category>
+				<DiscoveryTypes>
+					<DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" />
+				</DiscoveryTypes>
+				<DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery.DS">
+					<URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
+					<OrgId>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</OrgId>
+					<QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+					<QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+					<IntervalSeconds>600</IntervalSeconds>
+					<Debug>false</Debug>
+				</DataSource>
+			</Discovery>
+		</Discoveries>
+	</Monitoring>
+	<LanguagePacks>
+		<LanguagePack ID="ENU" IsDefault="true">
+			<DisplayStrings>
+				<DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery">
+					<Name>Grafana Instance Endpoint OrgName Discovery</Name>
+					<Description></Description>
+				</DisplayString>
+			</DisplayStrings>
+		</LanguagePack>
+	</LanguagePacks>
+</ManagementPackFragment>

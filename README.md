@@ -1,101 +1,121 @@
-# OpsLogix SCOM Management Pack for Grafana Alertmanager
+# Grafana-AlertManager-SCOM
 
-## Introduction: Bridging SCOM and Grafana Alerting
+# SCOM Management Pack for Grafana Alertmanager
 
-System Center Operations Manager (SCOM) and Grafana are each powerful monitoring solutions, but they traditionally operate in separate silos. SCOM excels at deep infrastructure monitoring (servers, OS, hardware, etc.), while Grafana (often paired with Prometheus) shines in cloud and application observability. **OpsLogix SCOM Management Pack for Grafana Alertmanager** combines the best of both worlds, enabling SCOM and Grafana to work in tandem.
+## Overview
 
-With this management pack, SCOM administrators can view and manage Grafana Alertmanager alerts from within the familiar SCOM console. Grafana administrators benefit as their alerts become visible to SCOM’s centralized operations processes. The result is a more cohesive monitoring strategy where **infrastructure and application alerts live side by side**, providing a comprehensive, 360-degree view of the IT environment.
+The **SCOM Management Pack for Grafana Alertmanager** enables integration between **System Center Operations Manager (SCOM)** and **Grafana Alertmanager**. This management pack connects to Grafana via its API, retrieves active alert workflows, and creates corresponding SCOM monitors and alerts. This provides a centralized monitoring approach where Grafana alerts are visible and actionable within SCOM.
 
----
+## Features
 
-## Key Capabilities of the Management Pack
+- **Automatic Discovery**: Detects alert workflows running in Grafana.
+- **Alert Synchronization**: Maps Grafana alerts to SCOM alerts in near real-time.
+- **Customizable Monitoring**: Allows configuration of alert thresholds and severity mapping.
+- **Secure API Authentication**: Supports API tokens for secure access to Grafana.
+- **Event Logging**: Logs API interactions for troubleshooting and auditing.
+- **Multi-org support**: Supports multiple organizations running on the same Grafana instance using separate service tokens.
 
-The OpsLogix Grafana Alertmanager integration pack introduces several key capabilities in SCOM:
+## Requirements
 
-- **Discovery of Grafana Alertmanager Instances**  
-  Automatically discover and monitor one or multiple Grafana Alertmanager endpoints. Each instance becomes a managed object in SCOM, allowing you to centralize monitoring for all your Grafana servers.
+- **SCOM Version**: 2016 or later
+- **Grafana Version**: 9.x or later
+- **Grafana API Access**: Requires an API token with appropriate permissions
+- **Windows Server**: Running the SCOM Management Server
+- **.NET Framework**: 4.7.2 or later
 
-- **Health Monitoring of Alertmanager**  
-  Periodic API probes ensure each Alertmanager instance is healthy and reachable. Failures generate SCOM alerts so you can address connectivity or service issues proactively.
+## Installation
 
-- **Alert Retrieval and Creation**  
-  Active Grafana alerts are imported into SCOM in real-time. Each alert is mapped to a corresponding SCOM alert, carrying over details like alert name, severity, and description.
+1. **Download the Management Pack**
 
-- **Bidirectional Alert State Synchronization**  
-  Resolved or acknowledged alerts in Grafana are automatically closed in SCOM, and vice versa. This two-way sync ensures both systems reflect the same alert lifecycle and eliminates duplicate work.
+   - Obtain the `.mpb` file from the release page.
 
-- **Rich Alert Context**  
-  Grafana alert details (labels, timestamps, links to dashboards) are captured in SCOM alert descriptions, giving operators full context and quick access to Grafana dashboards for deeper analysis.
+2. **Import into SCOM**
 
----
+   - Open the **SCOM Console** → Navigate to **Administration** → Select **Management Packs** → Click **Import Management Pack**.
 
-## Bidirectional Integration Benefits
+3. **Configure Grafana API Connection**
 
-Integrating Grafana Alertmanager with SCOM in a bidirectional manner brings significant benefits:
+   - Create a new API token in Grafana (`Settings` → `API Keys`).
+   - In SCOM, navigate to the **Management Pack Configuration** section and enter the **Grafana API URL** and **Token**.
 
-- **Unified Alert Management**  
-  Manage Grafana alerts using existing SCOM workflows—assignment, ticketing, annotation—without switching consoles.
+4. **Create Run As Account**
 
-- **Consistent Acknowledgment & Resolution**  
-  State changes in one system (SCOM or Grafana) are mirrored in the other, ensuring everyone sees the same alert status.
+   - Create a new Run As Account in SCOM Console as Basic Authentication with a username (not in use) and the token created in step 3 as Password.
 
-- **Reduced Noise & Deduplication**  
-  Leverage Alertmanager’s grouping in SCOM to avoid duplicate alerts and focus on unique incidents.
+5. **Configure Resource Pool**
 
----
+   - Modify the Resource Pool 'Grafana Alertmanager Resource Pool' to manual membership and add the computer that shall run the API connection to Grafana. This server needs to have access to the Grafana URL.
 
-## Leveraging Existing SCOM Integrations
+6. **Configure Run As Profile**
 
-Once Grafana alerts flow into SCOM, you can reuse all of SCOM’s established integrations:
+   - Modify the Run As Profile 'Grafana Alertmanager Run As Profile' and add the Run As Account created in step 4 to 'All targeted objects'. Make sure the account is distributed to the server you added to the Resource Pool in step 5.
 
-- **ServiceNow / ITSM**  
-  Grafana-originated alerts auto-create ServiceNow incidents via your existing SCOM-to-ServiceNow connector, enabling seamless, bi-directional incident handling.
+7. **Create Grafana Instance in SCOM**
 
-- **Notifications & Escalations**  
-  Use your email, SMS, Teams, or other notification channels and escalation logic for Grafana alerts, just as you do for native SCOM alerts.
+   - Change the script below on line 3, 4 and 5 to change the displayname, url and orgID for the Grafana instance you want to add. After that run the script on a SCOM server which the adds the Grafana Instance to SCOM.
 
-- **Automation & Remediation**  
-  Trigger existing runbooks or PowerShell automation in response to Grafana alerts—no custom scripts necessary.
+     `$ClassName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"`
 
----
+     `$GrafanaDisplayName = "" # Friendly Name eg "Grafana Instance/OrgId X"`
+     `$GrafanaEndpointURL = "" # Enter Grafana URL <httpORhttps>://<IPorFQDN>:<Port>`
+     `$GrafanaEndpointOrgId = 1 # Enter Grafana Org Id as integer`
 
-## Support for Multiple Grafana Instances
+     `# Start Execution`
 
-Enterprises often run multiple Grafana/Alertmanager deployments. This management pack can:
+     `New-SCOMManagementGroupConnection -ComputerName "localhost"`
+     `$MG = Get-SCOMManagementGroup`
 
-- **Discover & Monitor Multiple Instances**  
-  Add any number of Alertmanager endpoints to a single SCOM environment.
+     `#Get the monitoring class`
+     `$Class = Get-SCOMClass -Name $ClassName`
+     `$ClassInstance = New-Object Microsoft.EnterpriseManagement.Common.CreatableEnterpriseManagementObject($MG,$Class)`
+     `$ClassInstance.Id = New-Guid` 
+     `$ClassInstance[$Class,"DisplayName"].Value=$GrafanaDisplayName`
+     `$ClassInstance[$Class,"URL"].Value=$GrafanaEndpointURL`
+     `$ClassInstance[$Class,"OrgId"].Value=$GrafanaEndpointOrgId`
 
-- **Tag & Group Alerts by Instance**  
-  Keep alerts organized per instance, while enabling an aggregated enterprise-wide view.
 
-- **Scale Seamlessly**  
-  Onboard new Grafana servers without additional SCOM infrastructure.
+     `$discovery = New-Object Microsoft.EnterpriseManagement.ConnectorFramework.IncrementalDiscoveryData`
 
----
+     `$discovery.Add($ClassInstance)`
+     `$discovery.Commit($MG)`
 
-## 360-Degree Monitoring & Alerting View
+8. **Enable Discovery**
 
-By integrating Grafana Alertmanager into SCOM, you achieve a **complete view** of your IT stack:
+   - Ensure the discovery rule is enabled to start detecting Grafana alerts.
 
-- **Single Pane of Glass**  
-  See hardware, OS, application, and cloud alerts side by side in the SCOM console.
+9. **Verify Monitoring**
 
-- **Better Correlation**  
-  Correlate infrastructure events with application metrics to pinpoint root causes faster.
+   - Check the **SCOM Monitoring Pane** for detected alerts and workflows from Grafana.
 
-- **Cross-Team Collaboration**  
-  DevOps and IT operations share a common alert repository, fostering faster, more coordinated responses.
+## Configuration
 
----
+- **Alert Mapping**: You can customize how Grafana alerts map to SCOM alerts by adjusting severity levels in the **SCOM Authoring Pane**.
+- **Polling Interval**: Default is 60 seconds. This can be modified to reduce API calls.
+- **API Endpoint**: Uses `/api/v1/alerts` to fetch active alerts from Grafana Alertmanager.
 
-## Conclusion
+## Usage
 
-The OpsLogix SCOM Management Pack for Grafana Alertmanager delivers a high-level integration that **blends SCOM’s robust monitoring with Grafana’s alerting power**. Its discovery, health-monitoring, and bidirectional alert synchronization features enable true synergy:
+Once installed and configured:
 
-- **Unified alert management** across SCOM and Grafana  
-- **Leverage existing SCOM connectors** (ServiceNow, Teams, runbooks) for Grafana alerts  
-- **Scale to multiple Alertmanager instances** with ease  
-- **Gain a 360° view** of all alerts in one console  
+- Grafana alerts will be visible in the SCOM **Active Alerts** view.
+- SCOM operators can acknowledge and manage Grafana alerts within SCOM.
+- Alert states will update automatically based on Grafana Alertmanager status.
 
-By turning SCOM into a central alert hub, this management pack helps organizations streamline monitoring, reduce response times, and maintain full visibility over their entire environment.  
+## Troubleshooting
+
+**Issue:** Alerts are not appearing in SCOM.
+
+- Verify the API token has correct permissions (`Admin` or `Editor` access may be required).
+- Check event logs in SCOM for connection errors.
+- Ensure the discovery rule is enabled.
+
+**Issue:** API connection fails.
+
+- Ensure the correct Grafana API URL is configured (e.g., `https://grafana.example.com/api/v1/alerts`).
+- Test API connectivity using `curl` or Postman.
+
+## Future Enhancements
+
+- Support for additional Grafana alert types.
+- More granular alert filtering options.
+- Enhanced logging and diagnostics.
