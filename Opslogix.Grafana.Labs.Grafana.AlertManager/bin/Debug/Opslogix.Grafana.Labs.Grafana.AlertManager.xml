@@ -3,7 +3,7 @@
   <Manifest>
     <Identity>
       <ID>Opslogix.Grafana.Labs.Grafana.Alertmanager</ID>
-      <Version>1.0.0.123</Version>
+      <Version>1.0.0.183</Version>
     </Identity>
     <Name>Opslogix Grafana Labs Grafana Alertmanager</Name>
     <References>
@@ -32,6 +32,11 @@
         <Version>7.5.8501.1</Version>
         <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
       </Reference>
+      <Reference Alias="OGLP">
+        <ID>Opslogix.Grafana.Labs.Presentation</ID>
+        <Version>1.0.0.5</Version>
+        <PublicKeyToken>924d26111f465c48</PublicKeyToken>
+      </Reference>
     </References>
   </Manifest>
   <TypeDefinitions>
@@ -43,11 +48,14 @@
           <Property ID="rule" Key="false" Type="string" />
           <Property ID="condition" Key="false" Type="string" />
           <Property ID="isPaused" Key="false" Type="string" />
+          <Property ID="silenced" Key="false" Type="string" />
           <Property ID="labels" Key="false" Type="string" />
+          <Property ID="folder" Key="false" Type="string" />
         </ClassType>
         <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Public" Abstract="false" Base="System!System.ApplicationComponent" Hosted="false" Singleton="false" Extension="false">
           <Property ID="URL" Key="true" Type="string" />
           <Property ID="OrgId" Key="true" Type="int" />
+          <Property ID="OrgName" Key="false" Type="string" />
         </ClassType>
         <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class" Base="MSIL!Microsoft.SystemCenter.InstanceGroup" Accessibility="Public" Abstract="false" Hosted="false" Singleton="true"></ClassType>
         <ClassType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" Accessibility="Public" Abstract="false" Base="SC!Microsoft.SystemCenter.ManagementServicePool" Hosted="false" Singleton="true" Extension="false" />
@@ -63,6 +71,328 @@
       <SecureReference ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile" Accessibility="Public" />
     </SecureReferences>
     <ModuleTypes>
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS.Filtered" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Uid" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="OrgId" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Start" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="End" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="DaysOfWeekMask" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SendSilencedAlerts" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Start" Selector="$Config/Start$" ParameterType="string" />
+          <OverrideableParameter ID="End" Selector="$Config/End$" ParameterType="string" />
+          <OverrideableParameter ID="DaysOfWeekMask" Selector="$Config/DaysOfWeekMask$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
+          <OverrideableParameter ID="SendSilencedAlerts" Selector="$Config/SendSilencedAlerts$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS">
+                <URL>$Config/URL$</URL>
+                <QueryUser>$Config/QueryUser$</QueryUser>
+                <QueryPwd>$Config/QueryPwd$</QueryPwd>
+                <OrgId>$Config/OrgId$</OrgId>
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <Debug>$Config/Debug$</Debug>
+                <SendSilencedAlerts>$Config/SendSilencedAlerts$</SendSilencedAlerts>
+              </DataSource>
+              <ConditionDetection ID="Filter" TypeID="System!System.ExpressionFilter">
+                <Expression>
+                  <SimpleExpression>
+                    <ValueExpression>
+                      <XPathQuery Type="String">Property[@Name="Uid"]</XPathQuery>
+                    </ValueExpression>
+                    <Operator>Equal</Operator>
+                    <ValueExpression>
+                      <Value Type="String">$Config/Uid$</Value>
+                    </ValueExpression>
+                  </SimpleExpression>
+                </Expression>
+              </ConditionDetection>
+              <ConditionDetection ID="Schedule" TypeID="System!System.SchedulerFilter">
+                <SchedulerFilter>
+                  <ProcessDataMode>OnSchedule</ProcessDataMode>
+                  <Schedule>
+                    <WeeklySchedule>
+                      <Windows>
+                        <Daily>
+                          <Start>$Config/Start$</Start>
+                          <End>$Config/End$</End>
+                          <DaysOfWeekMask>$Config/DaysOfWeekMask$</DaysOfWeekMask>
+                        </Daily>
+                      </Windows>
+                    </WeeklySchedule>
+                    <ExcludeDates />
+                  </Schedule>
+                  <UseCurrentTime>true</UseCurrentTime>
+                </SchedulerFilter>
+              </ConditionDetection>
+            </MemberModules>
+            <Composition>
+              <Node ID="Schedule">
+                <Node ID="Filter">
+                  <Node ID="DS"></Node>
+                </Node>
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="OrgId" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <SyncTime />
+                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
+                <ScriptBody><![CDATA[Param(
+    $SourceId,
+    $ManagedEntityId,
+    [string]$URL,
+    $OrgId,
+    $QueryUser,
+    $QueryPwd,
+    $Debug
+)
+
+### Define Operations Manager objects ###
+$momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
+$DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityId);
+
+
+#Define variables
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
+$version = "1.0.12"
+$scriptOutput = ""
+
+$OrgId = $OrgId.ToString()
+
+$ServiceAccountToken = "$QueryPwd"
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+
+
+#$computerName = [System.Net.DNS]::GetHostByName('').HostName
+
+function Write-Event($EventID, $Severity, $Message) {
+    If ($Debug.ToUpper() -eq "TRUE"){      
+        $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    }
+}
+
+function Write-InfoEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 0 -Message $Message
+}
+function Write-WarningEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 2 -Message $Message
+}
+function Write-ErrorEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 1 -Message $Message
+}
+
+$scriptOutput += "Script running as $whoami.`n"
+$scriptOutput += "Param URL: $URL `n Using access token from Run As Account"
+
+####Discovery Script#####
+
+$baseurl = $URL
+$resourceurl = "/api/v1/provisioning/alert-rules"
+$ChecksURI = $baseurl + $resourceurl
+
+#Null the variables
+$Checks = $null
+$passed = $false
+
+#Number of passes
+$attempt = 0
+$maxattempts = 3
+
+#Connect to Web API in a while loop
+while ($passed -ne 200 -and $attempt -lt $maxattempts) {
+    $attempt += 1
+    $scriptOutput += "Number of Attempts: $attempt`n"
+    start-sleep 10
+
+    try {
+        ## Try to connect to API
+        $scriptOutput += "Trying to connect to: $ChecksURI`n"
+        #Request data from WebAPI
+
+        $WebRequestHeaders = @{
+            "Accept"           = "application/json"
+            "Content-Type"     = "application/json"
+            "X-Grafana-Org-Id" = "$OrgId"
+            "Authorization"    = "Bearer $ServiceAccountToken"
+        }
+        $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
+        # test response
+        $passed = $Checks.StatusCode
+
+        # $propertyBag.AddValue('ScriptResult',"GOOD")
+        $scriptOutput += "Connection to API a success`n"
+        $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
+
+    }#try
+
+    catch {
+        if ($attempt -ge $maxattempts) {
+            $scriptOutput += "Connection to API $ChecksURI FAILED`n"
+            $scriptOutput += "ScriptResult: BAD`n"
+            $scriptOutput += "Error: $_`n"
+            Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
+            Write-ErrorEvent -EventID 9201 -Message "$scriptOutput"
+            exit
+
+                
+                        
+        }#if
+    }#catch
+}#while
+
+#$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
+#$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
+   
+Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
+
+    [string]$Uid = ($check).Uid
+    [string]$ruleGroup = ($check).ruleGroup
+    [string]$title = ($check).title
+    [string]$condition = ($check).condition
+    [string]$isPaused = ($check).isPaused
+    [string]$labels = ($check).labels
+    [string]$folderUid = ($check).folderUID
+
+	#Set variables to get all folder names
+    $resourceurl = "/api/folders/"
+    $ChecksURI = $baseurl + $resourceurl + $folderUid
+
+    #Request data from WebAPI
+
+        $WebRequestHeaders = @{
+            "Accept"           = "application/json"
+            "Content-Type"     = "application/json"
+            "X-Grafana-Org-Id" = "$OrgId"
+            "Authorization"    = "Bearer $ServiceAccountToken"
+        }
+    $folder = Invoke-RestMethod -Uri $ChecksURI -Method GET -headers $WebRequestHeaders
+    
+    #Get foldername
+    $foldername = $folder.title
+
+    #Set variables to get silence Status
+    $resourceurl = "/api/alertmanager/grafana/api/v2/silences"
+    $ChecksURI = $baseurl + $resourceurl
+    $silenced = "False"
+
+    #Get silence rules
+    $silencerules = Invoke-RestMethod -Uri $ChecksURI -Method GET -headers $WebRequestHeaders
+
+    #Loop through each rule and check if Silence is Active
+    Foreach ($silencerule in $silencerules){
+        if (($silencerule.status.state -eq "active") -and ($silencerule.matchers.value -eq $Uid))
+        {    
+            $silenced = "True"
+        }
+    }
+
+    $displayName = $foldername + "\" + $title
+
+    $scriptOutput += "RuleName: $title`n"
+
+    $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/OrgId$", $OrgId)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/silenced$", $silenced)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/folder$", $foldername)
+    $Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $displayName)
+    # Add Path property as url/org. Retrieve the org name from the Alertmanager instance
+   
+
+    $DiscoveryData.AddInstance($Inst)
+    $scriptOutput += "Returning discoverydata: $DiscoveryData`n"
+    $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $silenced $labels $foldername`n"
+}
+
+# Return Discovery Items
+$DiscoveryData
+
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$scriptOutput += "Script took: $ScriptTime seconds`n"
+
+Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>sourceID</Name>
+                    <Value>$MPElement$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>managedEntityID</Name>
+                    <Value>$Target/Id$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>URL</Name>
+                    <Value>$Config/URL$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>OrgId</Name>
+                    <Value>$Config/OrgId$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryUser</Name>
+                    <Value>$Config/QueryUser$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryPwd</Name>
+                    <Value>$Config/QueryPwd$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>Debug</Name>
+                    <Value>$Config/Debug$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>60</TimeoutSeconds>
+              </DataSource>
+            </MemberModules>
+            <Composition>
+              <Node ID="DS" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.Discovery.Data</OutputType>
+      </DataSourceModuleType>
       <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool" Accessibility="Public" Batching="false">
         <Configuration>
           <xsd:element name="IntervalSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -116,13 +446,15 @@
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="rule" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="Uid" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="OrgId" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SendSilencedAlerts" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
           <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
+          <OverrideableParameter ID="SendSilencedAlerts" Selector="$Config/SendSilencedAlerts$" ParameterType="bool" />
         </OverrideableParameters>
         <ModuleImplementation Isolation="Any">
           <Composite>
@@ -135,9 +467,9 @@
                 <URL>$Config/URL$</URL>
                 <QueryUser>$Config/QueryUser$</QueryUser>
                 <QueryPwd>$Config/QueryPwd$</QueryPwd>
-                <rule>$Config/rule$</rule>
-                <Uid>$Config/Uid$</Uid>
                 <OrgId>$Config/OrgId$</OrgId>
+                <Debug>$Config/Debug$</Debug>
+                <SendSilencedAlerts>$Config/SendSilencedAlerts$</SendSilencedAlerts>
               </ProbeAction>
             </MemberModules>
             <Composition>
@@ -155,9 +487,11 @@
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
           <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
         </OverrideableParameters>
         <ModuleImplementation Isolation="Any">
           <Composite>
@@ -170,6 +504,7 @@
                 <URL>$Config/URL$</URL>
                 <QueryUser>$Config/QueryUser$</QueryUser>
                 <QueryPwd>$Config/QueryPwd$</QueryPwd>
+                <Debug>$Config/Debug$</Debug>
               </ProbeAction>
             </MemberModules>
             <Composition>
@@ -180,6 +515,231 @@
           </Composite>
         </ModuleImplementation>
         <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Script.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Schedule" TypeID="System!System.SimpleScheduler">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <SyncTime></SyncTime>
+              </DataSource>
+              <ProbeAction ID="Probe" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Script.PA">
+                <QueryUser>$Config/QueryUser$</QueryUser>
+                <QueryPwd>$Config/QueryPwd$</QueryPwd>
+                <Debug>$Config/Debug$</Debug>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="Probe">
+                <Node ID="Schedule"></Node>
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+      </DataSourceModuleType>
+      <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery.DS" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="OrgId" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
+                <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+                <SyncTime />
+                <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery.ps1</ScriptName>
+                <ScriptBody><![CDATA[Param(
+    $SourceId,
+    $ManagedEntityId,
+    [string]$URL,
+    $OrgId,
+    $QueryUser,
+    $QueryPwd,
+    $Debug
+)
+
+### Define Operations Manager objects ###
+$momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
+$DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityId);
+
+
+#Define variables
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery.ps1"
+$version = "1.0.0"
+$scriptOutput = ""
+
+$OrgId = $OrgId.ToString()
+
+$ServiceAccountToken = "$QueryPwd"
+# Gather the start time of the script
+$StartTime = Get-Date
+#Set variable to be used in logging events
+$whoami = whoami
+
+
+#$computerName = [System.Net.DNS]::GetHostByName('').HostName
+
+function Write-Event($EventID, $Severity, $Message) {
+    If ($Debug.ToUpper() -eq "TRUE"){
+        $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    }
+}
+
+function Write-InfoEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 0 -Message $Message
+}
+function Write-WarningEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 2 -Message $Message
+}
+function Write-ErrorEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 1 -Message $Message
+}
+
+$scriptOutput += "Script running as $whoami.`n"
+$scriptOutput += "Param URL: $URL `n Using access token from Run As Account"
+
+####Discovery Script#####
+
+$baseurl = $URL
+$resourceurl = "/api/org"
+$ChecksURI = $baseurl + $resourceurl
+
+#Null the variables
+$Checks = $null
+$passed = $false
+
+#Number of passes
+$attempt = 0
+$maxattempts = 3
+
+#Connect to Web API in a while loop
+while ($passed -ne 200 -and $attempt -lt $maxattempts) {
+    $attempt += 1
+    $scriptOutput += "Number of Attempts: $attempt`n"
+    start-sleep 10
+
+    try {
+        ## Try to connect to API
+        $scriptOutput += "Trying to connect to: $ChecksURI`n"
+        #Request data from WebAPI
+
+        $WebRequestHeaders = @{
+            "Accept"           = "application/json"
+            "Content-Type"     = "application/json"
+            "X-Grafana-Org-Id" = "$OrgId"
+            "Authorization"    = "Bearer $ServiceAccountToken"
+        }
+        $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
+        # test response
+        $passed = $Checks.StatusCode
+
+        # $propertyBag.AddValue('ScriptResult',"GOOD")
+        $scriptOutput += "Connection to API a success`n"
+        $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
+
+    }#try
+
+    catch {
+        if ($attempt -ge $maxattempts) {
+            $scriptOutput += "Connection to API $ChecksURI FAILED`n"
+            $scriptOutput += "ScriptResult: BAD`n"
+            $scriptOutput += "Error: $_`n"
+            Write-InfoEvent -EventID 9201 -Message "FAILED connection to API`nUrl: $ChecksURI`n $Checks`n"
+            Write-ErrorEvent -EventID 9201 -Message "$scriptOutput"
+            exit
+        }#if
+    }#catch
+}#while
+
+#$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET
+#$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
+   
+Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
+
+    [string]$OrgName = ($check).Name
+    
+    $scriptOutput += "OrgName: $OrgName`n"
+
+    $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']$")
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/OrgId$", $OrgId)
+    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/OrgName$", $OrgName)
+    # Add Path property as url/org. Retrieve the org name from the Alertmanager instance
+   
+    $DiscoveryData.AddInstance($Inst)
+    $scriptOutput += "Returning discoverydata: $DiscoveryData`n"
+    $scriptOutput += "properties: $URL $OrgId $OrgName`n"
+}
+
+# Return Discovery Items
+$DiscoveryData
+
+#Log an event for script ending and total execution time.
+$EndTime = Get-Date
+$ScriptTime = ($EndTime - $StartTime).TotalSeconds
+$scriptOutput += "Script took: $ScriptTime seconds`n"
+
+Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>sourceID</Name>
+                    <Value>$MPElement$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>managedEntityID</Name>
+                    <Value>$Target/Id$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>URL</Name>
+                    <Value>$Config/URL$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>OrgId</Name>
+                    <Value>$Config/OrgId$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryUser</Name>
+                    <Value>$Config/QueryUser$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryPwd</Name>
+                    <Value>$Config/QueryPwd$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>Debug</Name>
+                    <Value>$Config/Debug$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>60</TimeoutSeconds>
+              </DataSource>
+            </MemberModules>
+            <Composition>
+              <Node ID="DS" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.Discovery.Data</OutputType>
       </DataSourceModuleType>
       <DataSourceModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.PropertyBagProvider" Accessibility="Public" Batching="false">
         <Configuration>
@@ -229,23 +789,22 @@
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="rule" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="Uid" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="OrgId" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SendSilencedAlerts" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <ModuleImplementation Isolation="Any">
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
                 <ScriptName>Instance.ActiveRules.ps1</ScriptName>
-                <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
-param(
+                <ScriptBody><![CDATA[param(
     [string]$URL,
     $QueryUser,
     $QueryPwd,
-    [string]$rule,
-    [string]$Uid,
-    [int]$OrgId
+    [int]$OrgId,
+    $Debug,
+    $SendSilencedAlerts
 )
 
 ### Define Operations Manager objects ###
@@ -258,7 +817,9 @@ $scriptOutput = ""
 
 # Event log functions
 function Write-Event($EventID, $Severity, $Message) {
-    $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    If ($Debug.ToUpper() -eq "TRUE"){
+        $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    }
 }
 function Write-InfoEvent($EventID, $Message) {
     Write-Event -EventID $EventID -Severity 0 -Message $Message
@@ -270,9 +831,12 @@ function Write-ErrorEvent($EventID, $Message) {
     Write-Event -EventID $EventID -Severity 1 -Message $Message
 }
 
+$scriptOutput += "Script running as $whoami.`n"
+$scriptOutput += "Param URL: $URL `nUsing access token from Run As Account`n`n"
 
-#$OrgId = 1
+$OrgId = $OrgId.ToString()
 $ServiceAccountToken = "$QueryPwd"
+$baseurl = $URL
 
 #Write-WarningEvent -EventID 5470 -Message "URL: $URL, Org: $OrgId, Token: $ServiceAccountToken, UID: $Uid"
 
@@ -283,9 +847,27 @@ $WebRequestHeaders = @{
     "X-Grafana-Org-Id" = "$OrgId"
     "Authorization"    = "Bearer $ServiceAccountToken"
 }
-# implement try catch otherwise write error event 9201
+
+#Set variables for getting alert rules
+$resourceurl = "/api/v1/provisioning/alert-rules"
+$ChecksURI = $baseurl + $resourceurl
+
+# Get Rules - implement try catch otherwise write error event 9201
 try {
-    $response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
+    $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
+}
+catch {
+    Write-ErrorEvent -EventID 9201 -Message "Failed to get rules from Grafana Alertmanager API. Error: $_"
+    Exit
+}
+
+#Set variables to get all alerts
+$resourceurl = "/api/alertmanager/grafana/api/v2/alerts/"
+$ChecksURI = $baseurl + $resourceurl
+
+# Get Alerts - implement try catch otherwise write error event 9201
+try {
+    $response = Invoke-RestMethod -Uri $ChecksURI -Method GET -headers $WebRequestHeaders
 }
 catch {
     Write-ErrorEvent -EventID 9201 -Message "Failed to get active alerts from Grafana Alertmanager API. Error: $_"
@@ -293,62 +875,116 @@ catch {
 }
 #$response = Invoke-RestMethod -Uri "$URL/api/alertmanager/grafana/api/v2/alerts/" -Method Get -headers $WebRequestHeaders
 
+#Loop through each alert rule and filter alerts
+Foreach ($check in ($Checks.Content | ConvertFrom-Json)) {
 
-# Filter the response to match the specific rule (alertname)
-$filteredAlerts = $response | Where-Object { $_.labels.__alert_rule_uid__ -eq $Uid }
+    #Pick up UID and title
+    [string]$Uid = ($check).Uid
+    [string]$rule = ($check).title
 
-# Check if the output is empty (no active rules)
-if ($null -eq $filteredAlerts -or $filteredAlerts.Count -eq 0) {
-    # No active rules = rules is in healthy conditions
-    Write-InfoEvent -EventID 5470 -Message "No active events found, Return ok"
-    $alertSummary = "OK, no active Alert Rules in Grafana was found"
-    $propertyBag = $momScriptAPI.CreatePropertyBag()
-    $propertyBag.AddValue('Result', "OK")
-    $propertyBag.AddValue('AlertSummary', $alertSummary)
-    $propertyBag
-}
-else {
-    # Build a summary of all active rules
-    Write-InfoEvent -EventID 5470 -Message  "Alert Rule '$rule' is under state Firing:`n`n"
-    $alertSummary = "Alert Rule '$rule' is under state Firing:`n`n"
-    $alertCount = 0
-    foreach ($alert in $filteredAlerts) {
-        if ($alert.status.state -eq "active") {
-            $alertCount++
-            $alertName = $alert.labels.alertname
-            $alertStart = $alert.startsAt
-            # Adjust the time and format it to "yyyy-MM-dd HH:mm:ss"
-            $alertStart = ([datetime]$alert.startsAt).AddHours(2).ToString("yyyy-MM-dd HH:mm:ss")
+    #Reset variable
+    $filteredAlerts = $null
+    
+    # Filter the response to match the specific rule (alertname)
+    $filteredAlerts = $response | Where-Object { $_.labels.__alert_rule_uid__ -eq $Uid }
 
-            # Adding the information/data into each specific alert/rule in the Summary
-            $alertSummary += "$alertStart LABELS: "
+    $sendAlert = $True
+    
+    #Set variables to get silence Status
+    $resourceurl = "/api/alertmanager/grafana/api/v2/silences"
+    $ChecksURI = $baseurl + $resourceurl
+    $silenced = "False"
 
-            # Dynamically list all available labels on a single line separated by commas
-            $labels = @()
-            foreach ($label in $alert.labels.PSObject.Properties) {
-                $labelName = $label.Name
-                $labelValue = $label.Value
+    #Get silence rules
+    $silencerules = Invoke-RestMethod -Uri $ChecksURI -Method GET -headers $WebRequestHeaders
 
-                # Exclude specific labels that are not interesting to present in the SCOM alert
-                if ($labelName -notin "__alert_rule_uid__", "__grafana_autogenerated__", "__grafana_receiver__", "OperatedBy", "SCOMEnabled", "alertname") {
-                    $labels += "[${labelName}: ${labelValue}]"
-                }
-            }
-
-            $alertSummary += ($labels -join " ") + "`n"
+    #Loop through each rule and check if Silence is Active
+    Foreach ($silencerule in $silencerules){
+        if (($silencerule.status.state -eq "active") -and ($silencerule.matchers.value -eq $Uid) -and ($SendSilencedAlerts -eq $False))
+        {    
+            $sendAlert = $False
         }
     }
 
-    # Creating the URL that is presented in the SCOM alert
-    $generatorURL = "$URL/alerting/grafana/$Uid/view"
-    $alertSummary += "`n`nFor further analysis, please visit $generatorURL"
+    # Check if the output is empty (no active rules)
+    if ($null -eq $filteredAlerts -or $filteredAlerts.Count -eq 0) {
+        # No active rules = rules is in healthy conditions
+        # Write-InfoEvent -EventID 5470 -Message "No active events found for rule $rule, Return ok"
+        $alertSummary = "OK, no active Alert Rules in Grafana was found"
+        $scriptOutput += "Alert Rule '$rule' is OK`n"
+        $scriptOutput += "Result: OK, no active Alert Rules in Grafana was found`n`n"
+        $propertyBag = $momScriptAPI.CreatePropertyBag()
+        $propertyBag.AddValue('Result', "OK")
+        $propertyBag.AddValue('AlertSummary', $alertSummary)
+        $propertyBag.AddValue('rule', $rule)
+        $propertyBag.AddValue('Uid', $Uid)
+        #$momScriptAPI.Return($propertyBag)
+        $propertyBag
+    }
+    else {
+        # Build a summary of all active rules
+        # Write-InfoEvent -EventID 5470 -Message  "Alert Rule '$rule' is under state Firing:`n`n"
+        $alertSummary = "Alert Rule '$rule' is under state Firing:`n`n"
+        $scriptOutput += "Alert Rule '$rule' is under state Firing:`n"
+        $alertCount = 0
+        foreach ($alert in $filteredAlerts) {
+            if ($alert.status.state -eq "active") {
+                $alertCount++
+                $alertName = $alert.labels.alertname
+                $alertStart = $alert.startsAt
+                # Adjust the time and format it to "yyyy-MM-dd HH:mm:ss"
+                $alertStart = ([datetime]$alert.startsAt).AddHours(2).ToString("yyyy-MM-dd HH:mm:ss")
 
-    # Creating the property bag
-    $propertyBag = $momScriptAPI.CreatePropertyBag()
-    $propertyBag.AddValue('Result', "CRITICAL")
-    $propertyBag.AddValue('AlertSummary', $alertSummary)
-    $propertyBag.AddValue('rule', $rule)
-    $propertyBag
+                # Adding the information/data into each specific alert/rule in the Summary
+                $alertSummary += "$alertStart LABELS: "
+
+                # Dynamically list all available labels on a single line separated by commas
+                $labels = @()
+                foreach ($label in $alert.labels.PSObject.Properties) {
+                    $labelName = $label.Name
+                    $labelValue = $label.Value
+
+                    # Exclude specific labels that are not interesting to present in the SCOM alert
+                    if ($labelName -notin "__alert_rule_uid__", "__grafana_autogenerated__", "__grafana_receiver__", "OperatedBy", "SCOMEnabled", "alertname") {
+                        $labels += "[${labelName}: ${labelValue}]"
+                    }
+                }
+
+                $alertSummary += ($labels -join " ") + "`n"
+            }
+        }
+        
+        # Creating the URL that is presented in the SCOM alert
+        $generatorURL = "$URL/alerting/grafana/$Uid/view"
+        $alertSummary += "`n`nFor further analysis, please visit $generatorURL"
+
+        if ($sendAlert)
+        {
+            # Creating the property bag  
+            $scriptOutput += "Result: CRITICAL, The rule has fired`n`n"
+            $propertyBag = $momScriptAPI.CreatePropertyBag()
+            $propertyBag.AddValue('Result', "CRITICAL")
+            $propertyBag.AddValue('AlertSummary', $alertSummary)
+            $propertyBag.AddValue('rule', $rule)
+            $propertyBag.AddValue('Uid', $Uid)
+            #$momScriptAPI.Return($propertyBag)
+            $propertyBag
+        }
+        else
+        {
+            # $sendAlerts set to false = rules is in healthy conditions
+            # Write-InfoEvent -EventID 5470 -Message "No active events found for rule $rule, Return ok"
+            $alertSummary = "OK, Rule might have Alerts but are either paused or silenced"
+            $scriptOutput += "Result: OK, Rule might have Alerts but are either paused or silenced`n`n"
+            $propertyBag = $momScriptAPI.CreatePropertyBag()
+            $propertyBag.AddValue('Result', "OK")
+            $propertyBag.AddValue('AlertSummary', $alertSummary)
+            $propertyBag.AddValue('rule', $rule)
+            $propertyBag.AddValue('Uid', $Uid)
+            #$momScriptAPI.Return($propertyBag)
+            $propertyBag
+        }
+    }
 }
 
 Write-InfoEvent -EventID 5470 -Message $scriptOutput
@@ -367,16 +1003,16 @@ Write-InfoEvent -EventID 5470 -Message $scriptOutput
                     <Value>$Config/QueryPwd$</Value>
                   </Parameter>
                   <Parameter>
-                    <Name>rule</Name>
-                    <Value>$Config/rule$</Value>
-                  </Parameter>
-                  <Parameter>
-                    <Name>Uid</Name>
-                    <Value>$Config/Uid$</Value>
-                  </Parameter>
-                  <Parameter>
                     <Name>OrgId</Name>
                     <Value>$Config/OrgId$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>Debug</Name>
+                    <Value>$Config/Debug$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>SendSilencedAlerts</Name>
+                    <Value>$Config/SendSilencedAlerts$</Value>
                   </Parameter>
                 </Parameters>
                 <TimeoutSeconds>30</TimeoutSeconds>
@@ -395,17 +1031,63 @@ Write-InfoEvent -EventID 5470 -Message $scriptOutput
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <ModuleImplementation Isolation="Any">
           <Composite>
             <MemberModules>
               <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
                 <ScriptName>Instance.Endpoint.Availability.ps1</ScriptName>
-                <ScriptBody><![CDATA[#Insert parameters if necessary, otherwise remove this
+                <ScriptBody><![CDATA[<#
+.SYNOPSIS
+    This script checks the availability of a specified endpoint by making HTTP GET requests.
+
+.DESCRIPTION
+    The script attempts to connect to a specified URL endpoint multiple times (up to a maximum number of attempts) and logs the results. 
+    It uses the Invoke-RestMethod cmdlet to make HTTP GET requests to the endpoint and handles any connection errors.
+
+.PARAMETER QueryUser
+    The username for authentication (if required).
+
+.PARAMETER QueryPwd
+    The password for authentication (if required).
+
+.PARAMETER URL
+    The base URL of the endpoint to check.
+
+.FUNCTIONS
+    Write-Event
+        Logs an event with a specified EventID, Severity, and Message.
+
+    Write-InfoEvent
+        Logs an informational event with a specified EventID and Message.
+
+    Write-WarningEvent
+        Logs a warning event with a specified EventID and Message.
+
+    Write-ErrorEvent
+        Logs an error event with a specified EventID and Message.
+
+    Exit-Script
+        Logs the script output and exits the script.
+
+.NOTES
+    Version: 1.0
+    Author: [Your Name]
+    This script is part of the Opslogix Grafana Labs Grafana AlertManager integration.
+
+.EXAMPLE
+    .\Instance.Endpoint.Availability.ps1 -URL "http://example.com"
+
+    This command runs the script to check the availability of the endpoint at "http://example.com".
+
+#>
+#Insert parameters if necessary, otherwise remove this
 param(
-$QueryUser,
-$QueryPwd,
-[string]$URL
+    $QueryUser,
+    $QueryPwd,
+    [string]$URL,
+    $Debug
 )
 
 ### Define Operations Manager objects ###
@@ -419,27 +1101,24 @@ $scriptOutput = ""
 #Insert Variables
 
 
-function Write-Event($EventID, $Severity, $Message)
-{
-    $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+function Write-Event($EventID, $Severity, $Message) {
+    If ($Debug.ToUpper() -eq "TRUE"){    
+        $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    }
 }
-function Write-InfoEvent($EventID, $Message)
-{
+function Write-InfoEvent($EventID, $Message) {
     Write-Event -EventID $EventID -Severity 0 -Message $Message
 }
-function Write-WarningEvent($EventID, $Message)
-{
+function Write-WarningEvent($EventID, $Message) {
     Write-Event -EventID $EventID -Severity 2 -Message $Message
 }
-function Write-ErrorEvent($EventID, $Message)
-{
-	Write-Event -EventID $EventID -Severity 1 -Message $Message
+function Write-ErrorEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 1 -Message $Message
 }
-function Exit-Script()
-{
-	#EventID should be changed
+function Exit-Script() {
+    #EventID should be changed
     Write-InfoEvent -EventID 5380 -Message $scriptOutput
-	exit
+    exit
 }
 
 #EventID should be changed
@@ -476,63 +1155,52 @@ $headers = @{
 # create Uri
 $baseurl = $URL
 $resourceurl = "/api/health"
-$uri = $baseurl+ $resourceurl
-
-
-# Get share information but output only name, path and description
-
-	
+$uri = $baseurl + $resourceurl
 
 #Null the variables
 $testResult = $null
-$passed = $false
+$passed = $null
 
 #Number of passes
 $attempt = 0
 $maxattempts = 3
 
 #Connect to Web API in a while loop
-while ($passed -ne $null -and $attempt -lt $maxattempts) {
-        $attempt += 1
-        $scriptOutput += "Number of Attempts: $attempt`n"
-        sleep 10
+while ($passed -eq $null -and $attempt -lt $maxattempts) {
+    $attempt += 1
+    $scriptOutput += "Number of Attempts: $attempt`n"
+    sleep 10
 
-        try{
-            ## Try to connect to API
-            $scriptOutput += "Trying to connect to: $uri`n"
-			#Request data from WebAPI
-			$testResult = Invoke-RestMethod -Uri $uri -Method Get
+    try {
+        ## Try to connect to API
+        $scriptOutput += "Trying to connect to: $uri`n"
+        #Request data from WebAPI
+        $testResult = Invoke-RestMethod -Uri $uri -Method Get
 
-            # test response
-            $passed = $testResult
-            $propertyBag.AddValue('Result',"OK")
-			$scriptOutput += "Connection to API a success`n"
+        # test response
+        $passed = $testResult
+        $propertyBag.AddValue('Result', "OK")
+        $scriptOutput += "Connection to API a success`n Testresult: $testResult`n"
 
-        }#try
+    }#try
 
-        catch{
-            if ($attempt -ge $maxattempts){
-                $propertyBag.AddValue('Result',"CRITICAL")
-				$propertyBag.AddValue('ErrorMessage', "$_")
-				$scriptOutput += "Connection to API $URL FAILED`n"
-				$scriptOutput += "ScriptResult: BAD`n"
-				$scriptOutput += "Error: $_`n"
-
-
-                
-                        
-            }#if
-        }#catch
-    }#while
-
+    catch {
+        if ($attempt -ge $maxattempts) {
+            $propertyBag.AddValue('Result', "CRITICAL")
+            $propertyBag.AddValue('ErrorMessage', "$_")
+            $scriptOutput += "Connection to API $uri FAILED`n"
+            $scriptOutput += "ScriptResult: BAD`n"
+            $scriptOutput += "Error: $_`n"
+        }#if
+    }#catch
+}#while
 
 ### Add property bag values ###
-$propertybag.AddValue('Attempt',"$attempt")
-$propertybag.AddValue('URL',"$URL")
+$propertybag.AddValue('Attempt', "$attempt")
+$propertybag.AddValue('URL', "$URL")
 
 ### Return property bag
 $propertyBag
-
 
 #EventID should be changed     
 Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
@@ -548,6 +1216,106 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
                   <Parameter>
                     <Name>QueryPwd</Name>
                     <Value>$Config/QueryPwd$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>Debug</Name>
+                    <Value>$Config/Debug$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>60</TimeoutSeconds>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="PS"></Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.PropertyBagData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </ProbeActionModuleType>
+      <ProbeActionModuleType ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Script.PA" Accessibility="Internal" PassThrough="false" Batching="false">
+        <Configuration>
+          <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <ProbeAction ID="PS" TypeID="Windows!Microsoft.Windows.PowerShellPropertyBagProbe">
+                <ScriptName>CheckRunAsAccount.ps1.ps1</ScriptName>
+                <ScriptBody><![CDATA[param(
+    $QueryUser,
+    $QueryPwd,
+    $Debug
+)
+
+### Define Operations Manager objects ###
+$momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
+
+$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.CheckRunAsAccount.ps1"
+$version = "1.0.0"
+$scriptOutput = ""
+
+
+# Event log functions
+function Write-Event($EventID, $Severity, $Message) {
+     If ($Debug.ToUpper() -eq "TRUE"){
+         $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+     }
+}
+function Write-InfoEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 0 -Message $Message
+}
+function Write-WarningEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 2 -Message $Message
+}
+function Write-ErrorEvent($EventID, $Message) {
+    Write-Event -EventID $EventID -Severity 1 -Message $Message
+}
+
+Write-InfoEvent -EventID 5470 -Message "$QueryUser/$QueryPwd" 
+
+#Check if RunAsAccount is empty
+
+if ($null -eq $QueryPwd -or "" -eq $QueryPwd)
+{
+    #RunAsAccount is empty so create an Alert
+    $alertSummary = "RunAsAccount is not configured. Please configure a RunAsAccount and added it ot the Grafana Alertmanager Run As Profile"
+
+    Write-InfoEvent -EventID 5470 -Message "$alertSummary" 
+    # Creating the property bag  
+    $propertyBag = $momScriptAPI.CreatePropertyBag()
+    $propertyBag.AddValue('Result', "CRITICAL")
+    $propertyBag.AddValue('AlertSummary', $alertSummary)
+    #$momScriptAPI.Return($propertyBag)
+    $propertyBag
+}
+else {
+    $alertSummary = "RunAsAccount is configured. Everything is OK"
+
+    Write-InfoEvent -EventID 5470 -Message "$alertSummary"
+    # Creating the property bag 
+    $propertyBag = $momScriptAPI.CreatePropertyBag()
+    $propertyBag.AddValue('Result', "OK")
+    $propertyBag.AddValue('AlertSummary', $alertSummary)
+    #$momScriptAPI.Return($propertyBag)
+    $propertyBag
+}
+Write-InfoEvent -EventID 5470 -Message $scriptOutput
+]]></ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>QueryUser</Name>
+                    <Value>$Config/QueryUser$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>QueryPwd</Name>
+                    <Value>$Config/QueryPwd$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>Debug</Name>
+                    <Value>$Config/Debug$</Value>
                   </Parameter>
                 </Parameters>
                 <TimeoutSeconds>30</TimeoutSeconds>
@@ -572,24 +1340,39 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
           <xsd:element name="URL" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="rule" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="Uid" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="OrgId" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Samples" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Start" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="End" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="DaysOfWeekMask" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SendSilencedAlerts" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
           <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Samples" Selector="$Config/Samples$" ParameterType="int" />
+          <OverrideableParameter ID="Start" Selector="$Config/Start$" ParameterType="string" />
+          <OverrideableParameter ID="End" Selector="$Config/End$" ParameterType="string" />
+          <OverrideableParameter ID="DaysOfWeekMask" Selector="$Config/DaysOfWeekMask$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
+          <OverrideableParameter ID="SendSilencedAlerts" Selector="$Config/SendSilencedAlerts$" ParameterType="bool" />
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
-            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS">
+            <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.DS.Filtered">
               <URL>$Config/URL$</URL>
               <QueryUser>$Config/QueryUser$</QueryUser>
               <QueryPwd>$Config/QueryPwd$</QueryPwd>
-              <rule>$Config/rule$</rule>
               <Uid>$Config/Uid$</Uid>
               <OrgId>$Config/OrgId$</OrgId>
               <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+              <Start>$Config/Start$</Start>
+              <End>$Config/End$</End>
+              <DaysOfWeekMask>$Config/DaysOfWeekMask$</DaysOfWeekMask>
+              <Debug>$Config/Debug$</Debug>
+              <SendSilencedAlerts>$Config/SendSilencedAlerts$</SendSilencedAlerts>
             </DataSource>
             <ConditionDetection ID="FilterSuccess" TypeID="System!System.ExpressionFilter">
               <Expression>
@@ -616,6 +1399,9 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
                   </ValueExpression>
                 </SimpleExpression>
               </Expression>
+              <SuppressionSettings>
+                <MatchCount>$Config/Samples$</MatchCount>
+              </SuppressionSettings>
             </ConditionDetection>
           </MemberModules>
           <RegularDetections>
@@ -642,9 +1428,11 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
           <xsd:element name="QueryUser" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="QueryPwd" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="IntervalSeconds" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Debug" type="xsd:boolean" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
           <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="Debug" Selector="$Config/Debug$" ParameterType="bool" />
         </OverrideableParameters>
         <MonitorImplementation>
           <MemberModules>
@@ -653,6 +1441,7 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
               <QueryUser>$Config/QueryUser$</QueryUser>
               <QueryPwd>$Config/QueryPwd$</QueryPwd>
               <IntervalSeconds>$Config/IntervalSeconds$</IntervalSeconds>
+              <Debug>$Config/Debug$</Debug>
             </DataSource>
             <ConditionDetection ID="FilterSuccess" TypeID="System!System.ExpressionFilter">
               <Expression>
@@ -759,192 +1548,27 @@ Write-InfoEvent -EventID 5370 -Message $scriptOutput]]></ScriptBody>
         <DiscoveryTypes>
           <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" />
         </DiscoveryTypes>
-        <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.TimedPowerShell.DiscoveryProvider">
-          <IntervalSeconds>60</IntervalSeconds>
-          <SyncTime />
-          <ScriptName>Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1</ScriptName>
-          <ScriptBody><![CDATA[#Define Parameters
-Param(
-    $SourceId,
-    $ManagedEntityId,
-    [string]$URL,
-    $QueryUser,
-    $QueryPwd,
-    $OrgId
-)
-
-### Define Operations Manager objects ###
-$momScriptAPI = new-object -comObject 'MOM.ScriptAPI'
-$DiscoveryData = $momScriptAPI.CreateDiscoveryData(0, $SourceId, $ManagedEntityId);
-
-
-#Define variables
-$scriptName = "Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.ps1"
-$version = "1.0.5"
-$scriptOutput = ""
-
-#$OrgId = 1
-
-$ServiceAccountToken = "$QueryPwd"
-# Gather the start time of the script
-$StartTime = Get-Date
-#Set variable to be used in logging events
-$whoami = whoami
-
-
-$computerName = [System.Net.DNS]::GetHostByName('').HostName
-
-function Write-Event($EventID, $Severity, $Message) {
-    $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
-}
-
-function Write-InfoEvent($EventID, $Message) {
-    Write-Event -EventID $EventID -Severity 0 -Message $Message
-}
-function Write-WarningEvent($EventID, $Message) {
-    Write-Event -EventID $EventID -Severity 2 -Message $Message
-}
-function Write-ErrorEvent($EventID, $Message) {
-    Write-Event -EventID $EventID -Severity 1 -Message $Message
-}
-
-$scriptOutput += "Script running as $whoami.`n"
-$scriptOutput += "Param URL: $URL `n Using access token from Run As Account"
-
-####Discovery Script#####
-
-$baseurl = $URL
-
-#### Todo, change to input parameter #
-<#https://github.com/opslogix/Grafana-Alertmanager-SCOM/issues/14#>
-$resourceurl = "/api/v1/provisioning/alert-rules"
-
-$ChecksURI = $baseurl + $resourceurl
-
-#Null the variables
-$Checks = $null
-$passed = $false
-
-#Number of passes
-$attempt = 0
-$maxattempts = 3
-
-# Write Error event if $ServiceAccountToken is empty
-if ($null -eq $ServiceAccountToken) {
-    Write-ErrorEvent -EventID 9201 -Message "No Service Account Token found in Run As Account and passed in the script as a parameter. Exiting script."
-    exit
-}
-
-# Web Request Headers with Bearer Token
-$WebRequestHeaders = @{
-    "Accept"           = "application/json"
-    "Content-Type"     = "application/json"
-    "X-Grafana-Org-Id" = "$OrgId"
-    "Authorization"    = "Bearer $ServiceAccountToken"
-}
-
-#Connect to Web API in a while loop
-while ($passed -ne 200 -and $attempt -lt $maxattempts) {
-    $attempt += 1
-    $scriptOutput += "Number of Attempts: $attempt`n"
-    Start-Sleep 10
-
-    try {
-        ## Try to connect to API
-        $scriptOutput += "Trying to connect to: $ChecksURI`n using token: $ServiceAccountToken`n"
-        #Request data from WebAPI
-        $Checks = Invoke-WebRequest -Uri $ChecksURI -UseBasicParsing -Method GET -headers $WebRequestHeaders
-        # test response
-        $passed = $Checks.StatusCode
-
-        # $propertyBag.AddValue('ScriptResult',"GOOD")
-        $scriptOutput += "Connection to API a success`n"
-        $scriptOutput += "URI to be used in the while loop: $ChecksURI`n"
-    }
-
-    catch {
-        if ($attempt -ge $maxattempts) {
-            $scriptOutput += "Connection to API $ChecksURI FAILED`n"
-            $scriptOutput += "ScriptResult: BAD`n"
-            $scriptOutput += "Error: $_`n"
-
-            Write-ErrorEvent -EventID 9201 -Message "FAILED discovery connection to API`nUrl: $ChecksURI`n $Checks`n Token: $ServiceAccountToken`n"
-            exit             
-        }
-    }
-}
-
-## Why is this called twice, is it only available in the try catch block?
-$checks = Invoke-RestMethod -Uri $ChecksURI -UseBasicParsing -Method GET -Headers $WebRequestHeaders
-#$Checks | Select-Object Uid,ruleGroup,title,condition,isPaused,labels
-   
-Foreach ($check in ($checks.Content | ConvertFrom-Json)) {
-
-    [string]$Uid = ($check).Uid
-    [string]$ruleGroup = ($check).ruleGroup
-    [string]$title = ($check).title
-    [string]$condition = ($check).condition
-    [string]$isPaused = ($check).isPaused
-    [string]$labels = ($check).labels
-
-	
-
-    $scriptOutput += "RuleName: $title`n"
-
-    $Inst = $DiscoveryData.CreateClassInstance("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']$")
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class']/URL$", $URL)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/Uid$", $Uid)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/ruleGroup$", $ruleGroup)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/rule$", $title)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/condition$", $condition)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/isPaused$", $isPaused)
-    $Inst.AddProperty("$MPElement[Name='Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class']/labels$", $labels)
-    $Inst.AddProperty("$MPElement[Name='System!System.Entity']/DisplayName$", $title)
-   
-
-    $DiscoveryData.AddInstance($Inst)
-    $scriptOutput += "Returning discoverydata: $DiscoveryData`n"
-    $scriptOutput += "properties: $Uid $URL $ruleGroup $title $condition $isPaused $labels`n"
-}
-
-
-# Return Discovery Items
-$DiscoveryData
-
-#Log an event for script ending and total execution time.
-$EndTime = Get-Date
-$ScriptTime = ($EndTime - $StartTime).TotalSeconds
-$scriptOutput += "Script took: $ScriptTime seconds`n"
-
-
-Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
-          <Parameters>
-            <Parameter>
-              <Name>sourceID</Name>
-              <Value>$MPElement$</Value>
-            </Parameter>
-            <Parameter>
-              <Name>managedEntityID</Name>
-              <Value>$Target/Id$</Value>
-            </Parameter>
-            <Parameter>
-              <Name>URL</Name>
-              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</Value>
-            </Parameter>
-            <Parameter>
-              <Name>OrgId</Name>
-              <Value>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</Value>
-            </Parameter>
-            <Parameter>
-              <Name>QueryUser</Name>
-              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</Value>
-            </Parameter>
-            <Parameter>
-              <Name>QueryPwd</Name>
-              <Value>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</Value>
-            </Parameter>
-          </Parameters>
-          <TimeoutSeconds>60</TimeoutSeconds>
+        <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.DS">
+          <URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
+          <OrgId>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</OrgId>
+          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <IntervalSeconds>600</IntervalSeconds>
+          <Debug>false</Debug>
+        </DataSource>
+      </Discovery>
+      <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" />
+        </DiscoveryTypes>
+        <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery.DS">
+          <URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
+          <OrgId>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</OrgId>
+          <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+          <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+          <IntervalSeconds>600</IntervalSeconds>
+          <Debug>false</Debug>
         </DataSource>
       </Discovery>
       <Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="false" Remotable="true" Priority="Normal">
@@ -997,6 +1621,131 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
         </DataSource>
       </Discovery>
     </Discoveries>
+    <Rules>
+      <Rule ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.APIFailedLogin.Alert.Rule" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+        <Category>Alert</Category>
+        <DataSources>
+          <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.EventProvider">
+            <ComputerName>.</ComputerName>
+            <LogName>Operations Manager</LogName>
+            <Expression>
+              <And>
+                <Expression>
+                  <RegExExpression>
+                    <ValueExpression>
+                      <XPathQuery Type="UnsignedInteger">EventDisplayNumber</XPathQuery>
+                    </ValueExpression>
+                    <Operator>MatchesRegularExpression</Operator>
+                    <Pattern>^(9201)$</Pattern>
+                  </RegExExpression>
+                </Expression>
+                <Expression>
+                  <SimpleExpression>
+                    <ValueExpression>
+                      <XPathQuery Type="Integer">EventLevel</XPathQuery>
+                    </ValueExpression>
+                    <Operator>Equal</Operator>
+                    <ValueExpression>
+                      <Value Type="Integer">1</Value>
+                    </ValueExpression>
+                  </SimpleExpression>
+                </Expression>
+                <Expression>
+                  <RegExExpression>
+                    <ValueExpression>
+                      <XPathQuery Type="String">EventDescription</XPathQuery>
+                    </ValueExpression>
+                    <Operator>ContainsSubstring</Operator>
+                    <Pattern>Opslogix.Grafana.Labs.Grafana.Alertmanager</Pattern>
+                  </RegExExpression>
+                </Expression>
+              </And>
+            </Expression>
+          </DataSource>
+        </DataSources>
+        <WriteActions>
+          <WriteAction ID="Alert" TypeID="Health!System.Health.GenerateAlert">
+            <Priority>1</Priority>
+            <!-- 0=Low, 1=Medium, 2=High -->
+            <Severity>2</Severity>
+            <!-- 0=Information, 1=Warning, 2=Critical -->
+            <AlertName />
+            <AlertDescription />
+            <AlertOwner />
+            <AlertMessageId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.APIFailedLogin.Alert.Rule.AlertMessage"]$</AlertMessageId>
+            <AlertParameters>
+              <AlertParameter1>$Data/EventDescription$</AlertParameter1>
+            </AlertParameters>
+            <Suppression>
+              <SuppressionValue>$Data/EventDisplayNumber$</SuppressionValue>
+              <SuppressionValue>$Data/EventLevel$</SuppressionValue>
+            </Suppression>
+            <Custom1 />
+            <Custom2 />
+            <Custom3 />
+            <Custom4 />
+            <Custom5 />
+            <Custom6 />
+            <Custom7 />
+            <Custom8 />
+            <Custom9 />
+            <Custom10 />
+          </WriteAction>
+        </WriteActions>
+      </Rule>
+      <Rule ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+        <Category>Alert</Category>
+        <DataSources>
+          <DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Script.DS">
+            <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+            <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+            <IntervalSeconds>900</IntervalSeconds>
+            <Debug>false</Debug>
+          </DataSource>
+        </DataSources>
+        <ConditionDetection ID="FilterFailure" TypeID="System!System.ExpressionFilter">
+          <Expression>
+            <SimpleExpression>
+              <ValueExpression>
+                <XPathQuery Type="String">Property[@Name='Result']</XPathQuery>
+              </ValueExpression>
+              <Operator>Equal</Operator>
+              <ValueExpression>
+                <Value Type="String">CRITICAL</Value>
+              </ValueExpression>
+            </SimpleExpression>
+          </Expression>
+        </ConditionDetection>
+        <WriteActions>
+          <WriteAction ID="Alert" TypeID="Health!System.Health.GenerateAlert">
+            <Priority>1</Priority>
+            <!-- 0=Low, 1=Medium, 2=High -->
+            <Severity>2</Severity>
+            <!-- 0=Information, 1=Warning, 2=Critical -->
+            <AlertName />
+            <AlertDescription />
+            <AlertOwner />
+            <AlertMessageId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule.AlertMessage"]$</AlertMessageId>
+            <AlertParameters>
+              <AlertParameter1>$Data/Property[@Name='AlertSummary']$</AlertParameter1>
+            </AlertParameters>
+            <Suppression>
+              <SuppressionValue>$Data/Property[@Name='Result']$</SuppressionValue>
+            </Suppression>
+            <Custom1 />
+            <Custom2 />
+            <Custom3 />
+            <Custom4 />
+            <Custom5 />
+            <Custom6 />
+            <Custom7 />
+            <Custom8 />
+            <Custom9 />
+            <Custom10 />
+          </WriteAction>
+        </WriteActions>
+      </Rule>
+    </Rules>
     <Monitors>
       <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor" Enabled="true" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
         <Category>Operations</Category>
@@ -1019,13 +1768,19 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <URL>$Target/Host/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
           <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
           <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
-          <rule>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]/rule$</rule>
           <Uid>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class"]/Uid$</Uid>
           <OrgId>$Target/Host/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</OrgId>
           <IntervalSeconds>60</IntervalSeconds>
+          <Samples>1</Samples>
+          <Start>00:00</Start>
+          <End>23:59</End>
+          <!-- https://docs.microsoft.com/en-us/previous-versions/system-center/packs/ee808920(v=technet.10) -->
+          <DaysOfWeekMask>127</DaysOfWeekMask>
+          <Debug>false</Debug>
+          <SendSilencedAlerts>false</SendSilencedAlerts>
         </Configuration>
       </UnitMonitor>
-      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor" Enabled="false" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
+      <UnitMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor" Enabled="true" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Availability.Script.MT" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" Accessibility="Internal" ParentMonitorID="Health!System.Health.AvailabilityState">
         <Category>Operations</Category>
         <AlertSettings AlertMessage="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage">
           <AlertOnState>Error</AlertOnState>
@@ -1045,6 +1800,7 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
           <QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
           <IntervalSeconds>300</IntervalSeconds>
+          <Debug>false</Debug>
         </Configuration>
       </UnitMonitor>
       <DependencyMonitor ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.DependencyMonitor" Accessibility="Internal" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" RelationshipType="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship" MemberMonitor="Health!System.Health.AvailabilityState">
@@ -1427,7 +2183,7 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
       </View>
     </Views>
     <Folders>
-      <Folder ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" Accessibility="Public" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
+      <Folder ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" Accessibility="Public" ParentFolder="OGLP!Opslogix.Grafana.Labs.Root.Folder" />
     </Folders>
     <FolderItems>
       <FolderItem ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View" ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View.FolderItem" Folder="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder" />
@@ -1439,6 +2195,8 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
     <StringResources>
       <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage"></StringResource>
       <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Availability.Script.UnitMonitor.AlertMessage"></StringResource>
+      <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.APIFailedLogin.Alert.Rule.AlertMessage" />
+      <StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule.AlertMessage" />
     </StringResources>
   </Presentation>
   <LanguagePacks>
@@ -1446,6 +2204,10 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
       <DisplayStrings>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery">
           <Name>Grafana Instance Alert Rules Discovery</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery">
+          <Name>Grafana Instance Endpoint OrgName Discovery</Name>
           <Description></Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class.Discovery">
@@ -1480,7 +2242,7 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <Description>This is the monitor type that runs the Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.ps1 script.</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ActiveRules.Script.UnitMonitor.AlertMessage">
-          <Name>[Grafana] Alert Raised</Name>
+          <Name>Grafana Alertmanager Firing Alert Rule</Name>
           <Description>{0}</Description>
           <!--
               To insert parameters from the property bag, use {x} for each parameter specified under <AlertParameters> (see further up).
@@ -1519,8 +2281,22 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
               ...
             -->
         </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.APIFailedLogin.Alert.Rule">
+          <Name>Opslogix Grafana Labs Grafana Alertmanager Instance APIFailedLogin Alert Rule</Name>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.APIFailedLogin.Alert.Rule.AlertMessage">
+          <Name>Grafana Alertmanager Instance APIFailedLogin Alert</Name>
+          <Description>Event Description: {0}</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule">
+          <Name>Opslogix Grafana Labs Grafana Alertmanager Instance CheckRunAsAccount Alert Rule</Name>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule.AlertMessage">
+          <Name>Grafana Alertmanager Instance CheckRunAsAccount Alert</Name>
+          <Description>{0}</Description>
+        </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Root.Folder">
-          <Name>Grafana Labs</Name>
+          <Name>Grafana Alertmanager</Name>
           <Description>Grafana Labs Grafana Alertmanager Root Folder</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.ActiveAlert.View">
@@ -1532,16 +2308,16 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <Description>All closed alerts in Grafana for objects in All Instance Group</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.State.View">
-          <Name>Rule Instances</Name>
+          <Name>Alert Rules</Name>
           <Description>State of all Grafana Alert Rule instances</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.State.View">
-          <Name>Endpoint State</Name>
+          <Name>Alertmanager Instance</Name>
           <Description>State of all Grafana Endpoint instances</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool.State.View">
-          <Name>Resource Pool State</Name>
-          <Description>Current state of the Resource Pool</Description>
+          <Name>Alertmanager Resource Pool</Name>
+          <Description>Current state of the Grafana Alertmanager Resource Pool</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile">
           <Name>Grafana Alertmanager Run As Profile</Name>
@@ -1571,9 +2347,17 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <Name>isPaused</Name>
           <Description>isPaused</Description>
         </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="silenced">
+          <Name>silenced</Name>
+          <Description>silenced</Description>
+        </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="labels">
           <Name>labels</Name>
           <Description>labels</Description>
+        </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" SubElementID="folder">
+          <Name>folder</Name>
+          <Description>folder</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceAlertRules.Relationship">
           <Name>InstanceAlertRule relationship</Name>
@@ -1595,12 +2379,16 @@ Write-InfoEvent -EventID 9250 -Message $scriptOutput]]></ScriptBody>
           <Name>OrgId</Name>
           <Description>The Organization ID in Grafana</Description>
         </DisplayString>
+        <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" SubElementID="OrgName">
+          <Name>OrgName</Name>
+          <Description>The Organization Name in Grafana</Description>
+        </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.InstanceGroup.Class">
           <Name>Grafana All Instances Group</Name>
           <Description>All instances running under Grafana</Description>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool">
-          <Name>Grafana Resource Pool</Name>
+          <Name>Grafana Alertmanager Resource Pool</Name>
         </DisplayString>
         <DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.DataSource.ResourcePool">
           <Name>Grafana (Resource Pool Watcher Discovery Data Source)</Name>

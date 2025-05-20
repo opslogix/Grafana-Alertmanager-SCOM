@@ -1,12 +1,12 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<Monitoring>
 		<Discoveries>
-			<Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
+			<Discovery ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" ConfirmDelivery="true" Remotable="true" Priority="Normal">
 				<Category>Discovery</Category>
 				<DiscoveryTypes>
-					<DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Class" />
+					<DiscoveryClass TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class" />
 				</DiscoveryTypes>
-				<DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery.DS">
+				<DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery.DS">
 					<URL>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/URL$</URL>
 					<OrgId>$Target/Property[Type="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.Class"]/OrgId$</OrgId>
 					<QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
@@ -20,8 +20,8 @@
 	<LanguagePacks>
 		<LanguagePack ID="ENU" IsDefault="true">
 			<DisplayStrings>
-				<DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.AlertRules.Discovery">
-					<Name>Grafana Instance Alert Rules Discovery</Name>
+				<DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.Endpoint.OrgName.Discovery">
+					<Name>Grafana Instance Endpoint OrgName Discovery</Name>
 					<Description></Description>
 				</DisplayString>
 			</DisplayStrings>

@@ -1,0 +1,76 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Monitoring>
+		<Rules>
+			<Rule ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule" Enabled="true" Target="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.ResourcePool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+				<Category>Alert</Category>
+				<DataSources>
+					<DataSource ID="DS" TypeID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Script.DS">
+						<QueryUser>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/UserName$</QueryUser>
+						<QueryPwd>$RunAs[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.RunAsProfile"]/Password$</QueryPwd>
+						<IntervalSeconds>900</IntervalSeconds>
+						<Debug>false</Debug>
+					</DataSource>
+				</DataSources>
+				<ConditionDetection ID="FilterFailure" TypeID="System!System.ExpressionFilter">
+					<Expression>
+						<SimpleExpression>
+							<ValueExpression>
+								<XPathQuery Type="String">Property[@Name='Result']</XPathQuery>
+							</ValueExpression>
+							<Operator>Equal</Operator>
+							<ValueExpression>
+								<Value Type="String">CRITICAL</Value>
+							</ValueExpression>
+						</SimpleExpression>
+					</Expression>
+				</ConditionDetection>
+				<WriteActions>
+					<WriteAction ID="Alert" TypeID="Health!System.Health.GenerateAlert">
+						<Priority>1</Priority>
+						<!-- 0=Low, 1=Medium, 2=High -->
+						<Severity>2</Severity>
+						<!-- 0=Information, 1=Warning, 2=Critical -->
+						<AlertName />
+						<AlertDescription />
+						<AlertOwner />
+						<AlertMessageId>$MPElement[Name="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule.AlertMessage"]$</AlertMessageId>
+						<AlertParameters>
+							<AlertParameter1>$Data/Property[@Name='AlertSummary']$</AlertParameter1>
+						</AlertParameters>
+						<Suppression>
+							<SuppressionValue>$Data/Property[@Name='Result']$</SuppressionValue>
+						</Suppression>
+						<Custom1 />
+						<Custom2 />
+						<Custom3 />
+						<Custom4 />
+						<Custom5 />
+						<Custom6 />
+						<Custom7 />
+						<Custom8 />
+						<Custom9 />
+						<Custom10 />
+					</WriteAction>
+				</WriteActions>
+			</Rule>
+		</Rules>
+	</Monitoring>
+	<Presentation>
+		<StringResources>
+			<StringResource ID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule.AlertMessage" />
+		</StringResources>
+	</Presentation>
+	<LanguagePacks>
+		<LanguagePack ID="ENU" IsDefault="true">
+			<DisplayStrings>
+				<DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule">
+					<Name>Opslogix Grafana Labs Grafana Alertmanager Instance CheckRunAsAccount Alert Rule</Name>
+				</DisplayString>
+				<DisplayString ElementID="Opslogix.Grafana.Labs.Grafana.Alertmanager.Instance.CheckRunAsAccount.Alert.Rule.AlertMessage">
+					<Name>Grafana Alertmanager Instance CheckRunAsAccount Alert</Name>
+					<Description>{0}</Description>
+				</DisplayString>
+			</DisplayStrings>
+		</LanguagePack>
+	</LanguagePacks>
+</ManagementPackFragment>

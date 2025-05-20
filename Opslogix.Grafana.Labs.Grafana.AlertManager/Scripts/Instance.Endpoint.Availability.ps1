@@ -46,7 +46,8 @@
 param(
     $QueryUser,
     $QueryPwd,
-    [string]$URL
+    [string]$URL,
+    $Debug
 )
 
 ### Define Operations Manager objects ###
@@ -61,7 +62,9 @@ $scriptOutput = ""
 
 
 function Write-Event($EventID, $Severity, $Message) {
-    $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    If ($Debug.ToUpper() -eq "TRUE"){    
+        $momScriptAPI.LogScriptEvent($scriptName, $EventID, $Severity, "Version: $version`n$Message")
+    }
 }
 function Write-InfoEvent($EventID, $Message) {
     Write-Event -EventID $EventID -Severity 0 -Message $Message
@@ -114,21 +117,16 @@ $baseurl = $URL
 $resourceurl = "/api/health"
 $uri = $baseurl + $resourceurl
 
-
-# Get share information but output only name, path and description
-
-	
-
 #Null the variables
 $testResult = $null
-$passed = $false
+$passed = $null
 
 #Number of passes
 $attempt = 0
 $maxattempts = 3
 
 #Connect to Web API in a while loop
-while ($passed -ne $null -and $attempt -lt $maxattempts) {
+while ($passed -eq $null -and $attempt -lt $maxattempts) {
     $attempt += 1
     $scriptOutput += "Number of Attempts: $attempt`n"
     sleep 10
@@ -142,7 +140,7 @@ while ($passed -ne $null -and $attempt -lt $maxattempts) {
         # test response
         $passed = $testResult
         $propertyBag.AddValue('Result', "OK")
-        $scriptOutput += "Connection to API a success`n"
+        $scriptOutput += "Connection to API a success`n Testresult: $testResult`n"
 
     }#try
 
@@ -150,17 +148,12 @@ while ($passed -ne $null -and $attempt -lt $maxattempts) {
         if ($attempt -ge $maxattempts) {
             $propertyBag.AddValue('Result', "CRITICAL")
             $propertyBag.AddValue('ErrorMessage', "$_")
-            $scriptOutput += "Connection to API $URL FAILED`n"
+            $scriptOutput += "Connection to API $uri FAILED`n"
             $scriptOutput += "ScriptResult: BAD`n"
             $scriptOutput += "Error: $_`n"
-
-
-                
-                        
         }#if
     }#catch
 }#while
-
 
 ### Add property bag values ###
 $propertybag.AddValue('Attempt', "$attempt")
@@ -168,7 +161,6 @@ $propertybag.AddValue('URL', "$URL")
 
 ### Return property bag
 $propertyBag
-
 
 #EventID should be changed     
 Write-InfoEvent -EventID 5370 -Message $scriptOutput
