@@ -27,28 +27,29 @@ The **SCOM Management Pack for Grafana Alertmanager** enables integration betwee
 
 1. **Download the Management Pack**
 
-   - Obtain the `.mpb` file from the release page.
+   - Obtain the `.mpb` file from the release page in the zip file
 
 2. **Import into SCOM**
 
-   - Open the **SCOM Console** → Navigate to **Administration** → Select **Management Packs** → Click **Import Management Pack**.
+   - Open the **SCOM Console** → Navigate to **Administration** → Select **Management Packs** → Click **Import Management Packs**. Both Management Packs are required to import.
+   - Note, the Administration Scripts are also located in the unzipped folder.
 
 3. **Configure Grafana API Connection**
 
    - Create a new API token in Grafana (`Settings` → `API Keys`).
-   - In SCOM, navigate to the **Management Pack Configuration** section and enter the **Grafana API URL** and **Token**.
-
+   
 4. **Create Run As Account**
 
-   - Create a new Run As Account in SCOM Console as Basic Authentication with a username (not in use) and the token created in step 3 as Password.
+   - Create a new Run As Account in SCOM Console as Basic Authentication with a username (not in use) and the token created in step 3 as Password. We are only passing the token so take a note of the API key name in Grafana and we recommend to use the same name so you can reference wich API token is used for integration,
 
 5. **Configure Resource Pool**
 
-   - Modify the Resource Pool 'Grafana Alertmanager Resource Pool' to manual membership and add the computer that shall run the API connection to Grafana. This server needs to have access to the Grafana URL.
+   - Modify the Resource Pool 'Grafana Alertmanager Resource Pool' to manual membership and add the management server(s) that shall run the API connection to Grafana. This server needs to have access to the Grafana URL.
 
 6. **Configure Run As Profile**
 
    - Modify the Run As Profile 'Grafana Alertmanager Run As Profile' and add the Run As Account created in step 4 to 'All targeted objects'. Make sure the account is distributed to the server you added to the Resource Pool in step 5.
+   - Please note when multiple Grafana Alertmanager instances are used, each Run As account need to target each individual instance. You will need to create the instance first before being able to do so in the next step.
 
 7. **Create Grafana Instance in SCOM**
 
@@ -75,7 +76,7 @@ The **SCOM Management Pack for Grafana Alertmanager** enables integration betwee
 
 
      `$discovery = New-Object Microsoft.EnterpriseManagement.ConnectorFramework.IncrementalDiscoveryData`
-
+    
      `$discovery.Add($ClassInstance)`
      `$discovery.Commit($MG)`
 
